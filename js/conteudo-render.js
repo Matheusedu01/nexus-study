@@ -429,10 +429,13 @@ function verificarResposta(id) {
     const exercicio = document.getElementById(`exercicio-${id}`);
     if (!exercicio) return;
 
-    const respostaCorretaEl = exercicio.querySelector('.exercicio-resposta-oculta strong');
+    const respostaCorretaEl = exercicio.querySelector('.exercicio-resposta-oculta');
     if (!respostaCorretaEl) return;
 
-    const respostaCorreta = respostaCorretaEl.textContent.replace('Resposta correta: ', '').trim();
+    // O texto "Resposta correta:" fica dentro de um <strong>, mas a resposta em
+    // si é um nó de texto irmão logo depois — por isso lemos o textContent do
+    // container inteiro e removemos só o prefixo fixo.
+    const respostaCorreta = respostaCorretaEl.textContent.replace(/^\s*✅?\s*Resposta correta:\s*/, '').trim();
 
     if (!respostaUsuario) {
         feedback.innerHTML = `<span style="color: #ffd700;">⚠️ Digite uma resposta antes de verificar!</span>`;

@@ -32,6 +32,60 @@ function salvarDados() {
 }
 
 // ========================================
+// FUNÇÃO: Importar Trilha de Inglês (seed pronta, js/trilha-ingles-dados.js)
+// ========================================
+// O app guarda as trilhas no formato "materias" (grupos de estudos), mas o
+// seed em js/trilha-ingles-dados.js está no formato bruto "estudos" com um
+// campo "modulo" em texto — igual ao dados/trilhas.json. Por isso precisamos
+// agrupar por módulo aqui, do mesmo jeito que garantirTrilhasSeed() faz
+// (js/seed-dados.js) ao carregar o site pela primeira vez.
+function importarTrilhaIngles() {
+    if (typeof TRILHA_INGLES_SEED === 'undefined') {
+        alert('❌ Dados da trilha de Inglês não foram encontrados (js/trilha-ingles-dados.js).');
+        return;
+    }
+
+    const jaExiste = trilhas.some(t => t.titulo === TRILHA_INGLES_SEED.titulo);
+    if (jaExiste) {
+        const confirmar = confirm(`⚠️ Já existe uma trilha chamada "${TRILHA_INGLES_SEED.titulo}".\n\nDeseja substituí-la pela versão mais recente? O progresso dos alunos nessa trilha será perdido.`);
+        if (!confirmar) return;
+        trilhas = trilhas.filter(t => t.titulo !== TRILHA_INGLES_SEED.titulo);
+    }
+
+    const bruta = JSON.parse(JSON.stringify(TRILHA_INGLES_SEED));
+
+    const modulos = new Map();
+    (bruta.estudos || []).forEach(estudo => {
+        const nomeModulo = estudo.modulo || 'Conteúdo';
+        if (!modulos.has(nomeModulo)) modulos.set(nomeModulo, []);
+        modulos.get(nomeModulo).push(estudo);
+    });
+
+    const materias = Array.from(modulos.entries()).map(([nome, estudos]) => ({
+        nome,
+        icone: '📘',
+        estudos: estudos.slice().sort((a, b) => (a.ordem || 0) - (b.ordem || 0))
+    }));
+
+    const novaTrilha = {
+        titulo: bruta.titulo,
+        descricao: bruta.descricao,
+        nivel: bruta.nivel,
+        icone: bruta.icone,
+        cor: bruta.cor,
+        tags: bruta.tags,
+        duracao: bruta.duracao,
+        materias
+    };
+
+    trilhas.push(novaTrilha);
+    salvarDados();
+    carregarTrilhasAdmin();
+    atualizarStats();
+    mostrarFeedback(`✅ Trilha "${novaTrilha.titulo}" importada com sucesso! ${bruta.estudos.length} estudos em ${materias.length} módulos.`);
+}
+
+// ========================================
 // FUNÇÃO: Atualizar Estatísticas
 // ========================================
 function atualizarStats() {

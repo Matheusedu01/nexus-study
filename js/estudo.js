@@ -724,13 +724,18 @@ function ativarCliquePalavras() {
     // (ex.: um botão "Copiar" perto de uma classe "btn-copiar-codigo").
     const regexPalavras = new RegExp(`\\b(${palavrasParaDestacar.join('|')})\\b`, 'gi');
 
+    // Só faz sentido destacar palavras no texto corrido — títulos, subtítulos
+    // e rótulos (que muitas vezes já misturam português e inglês no mesmo
+    // texto) ficam de fora, senão o clique-para-traduzir "quebra" o título.
+    const tagsIgnoradas = ['SCRIPT', 'STYLE', 'BUTTON', 'CODE', 'PRE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+
     const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
             const tag = node.parentElement?.tagName;
-            if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'BUTTON' || tag === 'CODE' || tag === 'PRE') {
+            if (tagsIgnoradas.includes(tag)) {
                 return NodeFilter.FILTER_REJECT;
             }
-            if (node.parentElement?.classList.contains('palavra-destaque')) {
+            if (node.parentElement?.classList.contains('palavra-destaque') || node.parentElement?.classList.contains('desc-text')) {
                 return NodeFilter.FILTER_REJECT;
             }
             return NodeFilter.FILTER_ACCEPT;
