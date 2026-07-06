@@ -169,11 +169,11 @@ function renderizarConteudoEstudo(content) {
     // 5. TABELAS
     // ========================================
     content = content.replace(/\[TABELA\]([\s\S]*?)\[FIM_TABELA\]/g, function(match, tableContent) {
-        const lines = tableContent.trim().split('\n');
-        const headers = lines[0].split('|').filter(h => h.trim());
-        const rows = lines.slice(2).filter(line => line.trim().startsWith('|')).map(line => {
-            return line.split('|').filter(cell => cell.trim()).map(cell => cell.trim());
-        });
+        const celulasDaLinha = (linha) => linha.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+
+        const lines = tableContent.trim().split('\n').filter(line => line.trim());
+        const headers = celulasDaLinha(lines[0] || '');
+        const rows = lines.slice(2).map(celulasDaLinha);
 
         if (headers.length === 0 || rows.length === 0) {
             return '<div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);"><pre>' + tableContent + '</pre></div>';
