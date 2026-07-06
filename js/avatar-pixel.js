@@ -1,158 +1,384 @@
 // ========================================
-// AVATAR PIXELADO (8-BIT) — ESTILO RETRATO
+// AVATAR PIXELADO (8-BIT) — PERSONAGENS PRONTOS
 // ========================================
-// Gera um retrato 8-bit (rosto + ombros, fundo colorido) como SVG puro, sem
-// depender de nenhuma imagem externa — tudo é desenhado com retângulos.
-// As opções de cabelo/acessório/barba não são amarradas a um "gênero": o
-// usuário monta o rosto do jeito que quiser, combinando qualquer estilo com
-// qualquer outro.
-// Compartilhado entre perfil.html (editor) e js/user-header.js (miniatura
-// no cabeçalho).
+// Em vez de montar o rosto por peças soltas (o que ficava sem graça em
+// muitas combinações), aqui tem um conjunto fixo de personagens já prontos,
+// cada um com cores e sombreado ajustados à mão — o usuário escolhe um dos
+// prontos, não monta por partes. Tudo continua sendo SVG puro (retângulos),
+// sem depender de nenhuma imagem externa.
+// Compartilhado entre perfil.html (galeria de escolha) e js/user-header.js
+// (miniatura no cabeçalho).
 
-const AVATAR_OPCOES = {
-    fundos: ['#3a86ff', '#ff006e', '#06d6a0', '#8338ec', '#ffd60a', '#00b4d8', '#ff6b6b', '#2b2d42'],
-    peles: ['#ffdbac', '#f1c27d', '#e0ac69', '#c68642', '#8d5524', '#4a2c14'],
-    cabelos: [
-        { id: 'careca', nome: 'Careca' },
-        { id: 'curto', nome: 'Curto' },
-        { id: 'social', nome: 'Social' },
-        { id: 'longo', nome: 'Longo' },
-        { id: 'cacheado', nome: 'Cacheado' },
-        { id: 'afro', nome: 'Black Power' },
-        { id: 'moicano', nome: 'Moicano' },
-        { id: 'rabo', nome: 'Rabo de Cavalo' },
-        { id: 'coque', nome: 'Coque' },
-        { id: 'franja', nome: 'Franja' },
-        { id: 'trancas', nome: 'Tranças' },
-    ],
-    coresCabelo: ['#2c1810', '#5c3a1e', '#8a5a2b', '#d4a017', '#e8e8e8', '#ff6b6b', '#3a86ff', '#8338ec'],
-    barbas: [
-        { id: 'nenhuma', nome: 'Nenhuma' },
-        { id: 'bigode', nome: 'Bigode' },
-        { id: 'cavanhaque', nome: 'Cavanhaque' },
-        { id: 'completa', nome: 'Completa' },
-    ],
-    roupaCores: ['#3a86ff', '#ff006e', '#ff6b6b', '#06d6a0', '#8338ec', '#ffd60a', '#00b4d8', '#ffffff'],
-    acessorios: [
-        { id: 'nenhum', nome: 'Nenhum' },
-        { id: 'oculos', nome: 'Óculos' },
-        { id: 'oculos-sol', nome: 'Óculos de Sol' },
-        { id: 'brincos', nome: 'Brincos' },
-        { id: 'bandana', nome: 'Bandana' },
-        { id: 'bone', nome: 'Boné' },
-    ],
-};
+const INK = '#05050a';
 
-const AVATAR_PADRAO = {
-    fundo: AVATAR_OPCOES.fundos[0],
-    pele: AVATAR_OPCOES.peles[0],
-    cabelo: 'curto',
-    corCabelo: AVATAR_OPCOES.coresCabelo[0],
-    barba: 'nenhuma',
-    roupaCor: AVATAR_OPCOES.roupaCores[0],
-    acessorio: 'nenhum',
-};
-
-function obterAvatarUsuario(email) {
-    const salvo = JSON.parse(localStorage.getItem(`avatar_${email}`) || 'null');
-    return Object.assign({}, AVATAR_PADRAO, salvo || {});
+function camadaFundo(cor) {
+    return `<rect x="0" y="-6" width="24" height="30" fill="${cor}"/>`;
 }
 
-function salvarAvatarUsuario(email, config) {
-    localStorage.setItem(`avatar_${email}`, JSON.stringify(config));
+function camadaOmbros(cor) {
+    return `<rect x="1" y="19" width="22" height="5" fill="${cor}"/>`;
 }
 
-// Monta o SVG do retrato (viewBox 24x24) a partir da config.
-function gerarAvatarSVG(config, tamanho) {
-    tamanho = tamanho || 96;
-    const cfg = Object.assign({}, AVATAR_PADRAO, config || {});
-    const INK = '#05050a';
+function camadaPescoco(pele) {
+    return `<rect x="10" y="16.5" width="4" height="3" fill="${pele}"/>`;
+}
 
-    const fundo = `<rect x="0" y="-2" width="24" height="26" fill="${cfg.fundo}"/>`;
+function camadaOrelhas(pele) {
+    return `<rect x="4.5" y="9" width="2" height="3" fill="${pele}"/><rect x="17.5" y="9" width="2" height="3" fill="${pele}"/>`;
+}
 
-    const ombros = `<rect x="1" y="19" width="22" height="5" fill="${cfg.roupaCor}"/>`;
-    const pescoco = `<rect x="10" y="16.5" width="4" height="3" fill="${cfg.pele}"/>`;
+function camadaCabeca(pele) {
+    return `<rect x="6" y="3" width="12" height="13" fill="${pele}"/><rect x="7" y="13.5" width="10" height="2" fill="#000" opacity="0.06"/>`;
+}
 
-    const orelhas = `<rect x="4.5" y="9" width="2" height="3" fill="${cfg.pele}"/><rect x="17.5" y="9" width="2" height="3" fill="${cfg.pele}"/>`;
-
-    // cabelo desenhado atrás da cabeça (dá volume nas bordas, tipo black power/cacheado)
-    let cabeloTras = '';
-    if (cfg.cabelo === 'afro') {
-        cabeloTras = `<rect x="3" y="1" width="18" height="15" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.cabelo === 'cacheado') {
-        cabeloTras = `<rect x="4" y="1.5" width="16" height="13" fill="${cfg.corCabelo}"/><rect x="5" y="0.3" width="3" height="2" fill="${cfg.corCabelo}"/><rect x="10.5" y="0" width="3" height="2" fill="${cfg.corCabelo}"/><rect x="16" y="0.3" width="3" height="2" fill="${cfg.corCabelo}"/>`;
-    }
-
-    const cabeca = `<rect x="6" y="3" width="12" height="13" fill="${cfg.pele}"/>`;
-    const sombraQueixo = `<rect x="7" y="13.5" width="10" height="2" fill="#000" opacity="0.06"/>`;
-
-    const sobrancelhas = `<rect x="8" y="8.5" width="3" height="0.8" fill="${cfg.corCabelo}"/><rect x="13" y="8.5" width="3" height="0.8" fill="${cfg.corCabelo}"/>`;
-    const olhos = `
+function camadaOlhos(corSobrancelha) {
+    return `
+        <rect x="8" y="8.5" width="3" height="0.8" fill="${corSobrancelha}"/><rect x="13" y="8.5" width="3" height="0.8" fill="${corSobrancelha}"/>
         <rect x="8" y="10" width="2.2" height="2.2" fill="${INK}"/>
         <rect x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/>
         <rect x="8.3" y="10.3" width="0.7" height="0.7" fill="#fff"/>
         <rect x="14.1" y="10.3" width="0.7" height="0.7" fill="#fff"/>
+        <rect x="11.7" y="12.5" width="0.6" height="2" fill="#000" opacity="0.15"/>
     `;
-    const nariz = `<rect x="11.7" y="12.5" width="0.6" height="2" fill="#000" opacity="0.15"/>`;
-    const boca = `<rect x="9.5" y="15.3" width="5" height="1" fill="#7a3b3b"/>`;
+}
 
-    // cabelo desenhado na frente (topo da cabeça e franjas), varia por estilo
-    let cabeloFrente = '';
-    if (cfg.cabelo === 'curto') {
-        cabeloFrente = `<rect x="6" y="2" width="12" height="3.5" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.cabelo === 'social') {
-        cabeloFrente = `<rect x="6" y="2" width="12" height="3" fill="${cfg.corCabelo}"/><rect x="10.5" y="2" width="1" height="3" fill="${cfg.pele}"/>`;
-    } else if (cfg.cabelo === 'longo') {
-        cabeloFrente = `<rect x="6" y="2" width="12" height="3.5" fill="${cfg.corCabelo}"/><rect x="4.5" y="3" width="2" height="15" fill="${cfg.corCabelo}"/><rect x="17.5" y="3" width="2" height="15" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.cabelo === 'cacheado') {
-        cabeloFrente = `<rect x="6" y="2" width="12" height="3" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.cabelo === 'moicano') {
-        cabeloFrente = `<rect x="10.5" y="-1" width="3" height="5" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.cabelo === 'rabo') {
-        cabeloFrente = `<rect x="7" y="2" width="10" height="2.5" fill="${cfg.corCabelo}"/><rect x="18.5" y="5" width="3" height="7" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.cabelo === 'coque') {
-        cabeloFrente = `<rect x="7" y="2" width="10" height="2.5" fill="${cfg.corCabelo}"/><rect x="10" y="-0.5" width="4" height="3" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.cabelo === 'franja') {
-        cabeloFrente = `<rect x="6" y="2" width="12" height="2.5" fill="${cfg.corCabelo}"/><rect x="6.5" y="4" width="11" height="2.2" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.cabelo === 'trancas') {
-        cabeloFrente = `
-            <rect x="6" y="2" width="12" height="3" fill="${cfg.corCabelo}"/>
-            <rect x="4.5" y="5" width="2" height="2.2" fill="${cfg.corCabelo}"/>
-            <rect x="4.7" y="7.3" width="1.6" height="2" fill="${cfg.corCabelo}"/>
-            <rect x="4.5" y="9.4" width="2" height="2.2" fill="${cfg.corCabelo}"/>
-            <rect x="17.5" y="5" width="2" height="2.2" fill="${cfg.corCabelo}"/>
-            <rect x="17.7" y="7.3" width="1.6" height="2" fill="${cfg.corCabelo}"/>
-            <rect x="17.5" y="9.4" width="2" height="2.2" fill="${cfg.corCabelo}"/>
-        `;
-    }
-    // careca: nada
+function camadaBoca(cor) {
+    return `<rect x="9.5" y="15.3" width="5" height="1" fill="${cor || '#7a3b3b'}"/>`;
+}
 
-    let barba = '';
-    if (cfg.barba === 'bigode') {
-        barba = `<rect x="9.5" y="14.3" width="5" height="1" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.barba === 'cavanhaque') {
-        barba = `<rect x="9.5" y="14.3" width="5" height="1" fill="${cfg.corCabelo}"/><rect x="10.5" y="16.3" width="3" height="1.3" fill="${cfg.corCabelo}"/>`;
-    } else if (cfg.barba === 'completa') {
-        barba = `<rect x="9.5" y="14.3" width="5" height="1" fill="${cfg.corCabelo}"/><rect x="7" y="13.8" width="10" height="1" fill="${cfg.corCabelo}"/><rect x="8" y="14.8" width="8" height="2.2" fill="${cfg.corCabelo}"/>`;
-    }
+function montarSVG(camadas, tamanho) {
+    tamanho = tamanho || 96;
+    return `<svg viewBox="0 -6 24 30" width="${tamanho}" height="${Math.round(tamanho * 30 / 24)}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">${camadas.join('')}</svg>`;
+}
 
-    let acessorio = '';
-    if (cfg.acessorio === 'oculos') {
-        acessorio = `<rect x="7.3" y="9.7" width="3.4" height="2.6" fill="none" stroke="${INK}" stroke-width="0.6"/><rect x="13.3" y="9.7" width="3.4" height="2.6" fill="none" stroke="${INK}" stroke-width="0.6"/><rect x="10.7" y="10.6" width="2.6" height="0.4" fill="${INK}"/>`;
-    } else if (cfg.acessorio === 'oculos-sol') {
-        acessorio = `<rect x="7.3" y="9.7" width="3.4" height="2.6" fill="${INK}"/><rect x="13.3" y="9.7" width="3.4" height="2.6" fill="${INK}"/><rect x="10.7" y="10.6" width="2.6" height="0.4" fill="${INK}"/>`;
-    } else if (cfg.acessorio === 'brincos') {
-        acessorio = `<rect x="5" y="12" width="1" height="1" fill="#ffd700"/><rect x="18" y="12" width="1" height="1" fill="#ffd700"/>`;
-    } else if (cfg.acessorio === 'bandana') {
-        acessorio = `<rect x="5.5" y="4.5" width="13" height="2.2" fill="${cfg.roupaCor}"/><rect x="18.5" y="4.8" width="2" height="1.6" fill="${cfg.roupaCor}"/>`;
-    } else if (cfg.acessorio === 'bone') {
-        acessorio = `<rect x="5" y="1.5" width="14" height="4" fill="${cfg.roupaCor}"/><rect x="5" y="4.5" width="6" height="1.3" fill="${cfg.roupaCor}"/>`;
-    }
+const PERSONAGENS = [
+    {
+        id: 'zumbi',
+        nome: 'Zumbi',
+        fundo: '#14281f',
+        camadas() {
+            const pele = '#8bc98b';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#5a5a5a'),
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                `<rect x="8" y="6.3" width="4" height="0.5" fill="#2c1810"/>`,
+                camadaOlhos('#1c1c1c'),
+                camadaBoca('#3d1f1f'),
+                `<rect x="6" y="1.4" width="3" height="2" fill="#1c1c1c"/><rect x="9" y="0.9" width="3" height="2.4" fill="#1c1c1c"/><rect x="13" y="1.1" width="3" height="2.1" fill="#1c1c1c"/><rect x="16" y="1.6" width="2.2" height="1.7" fill="#1c1c1c"/>`,
+            ];
+        },
+    },
+    {
+        id: 'policial',
+        nome: 'Policial',
+        fundo: '#22577a',
+        camadas() {
+            const pele = '#f1c27d';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#1b263b'),
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#2c1810'),
+                camadaBoca(),
+                `<rect x="10" y="19" width="4" height="1" fill="#fff"/>`,
+                `<rect x="5" y="1.5" width="14" height="4" fill="#1b263b"/><rect x="5" y="4.5" width="14" height="1" fill="#0d1321"/><rect x="11" y="2.3" width="2" height="1.5" fill="#ffd700"/>`,
+            ];
+        },
+    },
+    {
+        id: 'bombeiro',
+        nome: 'Bombeiro',
+        fundo: '#780000',
+        camadas() {
+            const pele = '#e0ac69';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#ffb703'),
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#4a2c14'),
+                camadaBoca(),
+                `<rect x="9" y="14.2" width="6" height="1" fill="#4a2c14"/>`,
+                `<rect x="5" y="1" width="14" height="4.5" fill="#c1121f"/><rect x="4.5" y="4.5" width="15" height="1.2" fill="#780000"/><rect x="10.5" y="2" width="3" height="2" fill="#fff"/>`,
+            ];
+        },
+    },
+    {
+        id: 'papai-noel',
+        nome: 'Papai Noel',
+        fundo: '#1b4332',
+        camadas() {
+            const pele = '#f1c27d';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#c1121f'),
+                `<rect x="1" y="19" width="22" height="1" fill="#fff"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#f5f5f5'),
+                camadaBoca('#a4433a'),
+                `<rect x="9.5" y="14.2" width="5" height="1" fill="#f5f5f5"/><rect x="7" y="13.6" width="10" height="1" fill="#f5f5f5"/><rect x="8" y="14.6" width="8" height="2.4" fill="#f5f5f5"/>`,
+                `<rect x="6" y="0.5" width="12" height="2.8" fill="#c1121f"/><rect x="5.5" y="2.8" width="13" height="1.4" fill="#f5f5f5"/><rect x="16.5" y="-1.8" width="2.6" height="2.6" fill="#f5f5f5"/>`,
+            ];
+        },
+    },
+    {
+        id: 'astronauta',
+        nome: 'Astronauta',
+        fundo: '#03071e',
+        camadas() {
+            const pele = '#f1c27d';
+            return [
+                camadaFundo(this.fundo),
+                `<rect x="4" y="14" width="1" height="1" fill="#fff"/><rect x="20" y="6" width="1" height="1" fill="#fff"/><rect x="19" y="18" width="0.8" height="0.8" fill="#fff"/>`,
+                camadaOmbros('#e8e8e8'),
+                camadaPescoco(pele),
+                `<rect x="4" y="1" width="16" height="16" fill="#e8e8e8"/>`,
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#4a2c14'),
+                camadaBoca(),
+                `<rect x="6" y="3" width="12" height="10" fill="#48cae4" opacity="0.32"/>`,
+                `<rect x="17" y="1.5" width="1.4" height="1.4" fill="#e63946"/>`,
+            ];
+        },
+    },
+    {
+        id: 'pirata',
+        nome: 'Pirata',
+        fundo: '#023047',
+        camadas() {
+            const pele = '#c68642';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#3d2b1f'),
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#2c1810'),
+                camadaBoca(),
+                `<rect x="9" y="14.3" width="5" height="1" fill="#2c1810"/><rect x="7" y="13.8" width="10" height="1" fill="#2c1810"/><rect x="8" y="14.8" width="8" height="2.2" fill="#2c1810"/>`,
+                `<rect x="6" y="2" width="12" height="3" fill="#9d0208"/>`,
+                `<rect x="6" y="10.4" width="14" height="0.6" fill="${INK}"/><rect x="13.6" y="9.8" width="2.6" height="2.6" fill="${INK}"/>`,
+                `<rect x="18" y="12" width="1" height="1" fill="#ffd700"/>`,
+            ];
+        },
+    },
+    {
+        id: 'robo',
+        nome: 'Robô',
+        fundo: '#3c096c',
+        camadas() {
+            const metal = '#adb5bd';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#495057'),
+                `<rect x="11" y="20.3" width="2" height="1.4" fill="#00f5d4"/>`,
+                `<rect x="10" y="16.5" width="4" height="3" fill="${metal}"/>`,
+                `<rect x="4.5" y="9" width="2" height="3" fill="${metal}"/><rect x="17.5" y="9" width="2" height="3" fill="${metal}"/>`,
+                `<rect x="6" y="3" width="12" height="13" fill="${metal}"/><rect x="6" y="8" width="12" height="0.4" fill="#495057"/>`,
+                `<rect x="8" y="10" width="2.2" height="2.2" fill="#00f5d4"/><rect x="13.8" y="10" width="2.2" height="2.2" fill="#00f5d4"/>`,
+                `<rect x="9.5" y="15" width="0.6" height="1.4" fill="#495057"/><rect x="11.5" y="15" width="0.6" height="1.4" fill="#495057"/><rect x="13.5" y="15" width="0.6" height="1.4" fill="#495057"/>`,
+                `<rect x="11.5" y="-1.5" width="1" height="3.5" fill="#495057"/><rect x="11" y="-2.3" width="2" height="1.6" fill="#e63946"/>`,
+            ];
+        },
+    },
+    {
+        id: 'bruxa',
+        nome: 'Bruxa',
+        fundo: '#240046',
+        camadas() {
+            const pele = '#f1c27d';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#3d2b56'),
+                camadaPescoco(pele),
+                `<rect x="4" y="3" width="2" height="14" fill="#1c1c1c"/><rect x="18" y="3" width="2" height="14" fill="#1c1c1c"/>`,
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#1c1c1c'),
+                camadaBoca('#5a2d5a'),
+                `<rect x="13" y="13" width="0.7" height="0.7" fill="#4a2c14"/>`,
+                `<rect x="6" y="2" width="12" height="2" fill="#1c1c1c"/>`,
+                `<rect x="5" y="1.3" width="14" height="1.4" fill="#2b2118"/><rect x="6" y="1" width="12" height="0.7" fill="#ffd700"/><rect x="9" y="-2" width="6" height="1.6" fill="#3d2b56"/><rect x="9.7" y="-3.4" width="4.6" height="1.5" fill="#3d2b56"/><rect x="10.4" y="-4.6" width="3.2" height="1.3" fill="#3d2b56"/><rect x="11.1" y="-5.6" width="1.8" height="1.1" fill="#3d2b56"/>`,
+            ];
+        },
+    },
+    {
+        id: 'cientista',
+        nome: 'Cientista',
+        fundo: '#0077b6',
+        camadas() {
+            const pele = '#f1c27d';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#f8f9fa'),
+                `<rect x="9" y="19" width="2" height="2" fill="#e9ecef"/><rect x="13" y="19" width="2" height="2" fill="#e9ecef"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#d9d9d9'),
+                camadaBoca(),
+                `<rect x="7.3" y="9.7" width="3.4" height="2.6" fill="none" stroke="${INK}" stroke-width="0.6"/><rect x="13.3" y="9.7" width="3.4" height="2.6" fill="none" stroke="${INK}" stroke-width="0.6"/><rect x="10.7" y="10.6" width="2.6" height="0.4" fill="${INK}"/>`,
+                `<rect x="6" y="0.8" width="3" height="3" fill="#d9d9d9"/><rect x="9.3" y="0.2" width="3" height="3.6" fill="#d9d9d9"/><rect x="13" y="0.5" width="3" height="3.3" fill="#d9d9d9"/><rect x="16" y="1.1" width="2.3" height="2.6" fill="#d9d9d9"/>`,
+            ];
+        },
+    },
+    {
+        id: 'ninja',
+        nome: 'Ninja',
+        fundo: '#212529',
+        camadas() {
+            const pele = '#e0ac69';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros(INK),
+                `<rect x="1" y="19" width="22" height="0.8" fill="#9d0208"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                `<rect x="8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="8.3" y="10.3" width="0.7" height="0.7" fill="#fff"/><rect x="14.1" y="10.3" width="0.7" height="0.7" fill="#fff"/>`,
+                `<rect x="6.5" y="12.3" width="11" height="4" fill="${INK}"/>`,
+                `<rect x="6" y="6.3" width="12" height="2" fill="${INK}"/><rect x="17.5" y="6.6" width="2.5" height="1.2" fill="${INK}"/>`,
+            ];
+        },
+    },
+    {
+        id: 'rainha',
+        nome: 'Rainha',
+        fundo: '#ff70a6',
+        camadas() {
+            const pele = '#ffdbac';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#7b2cbf'),
+                camadaPescoco(pele),
+                `<rect x="4.5" y="3" width="2" height="14" fill="#e9c46a"/><rect x="17.5" y="3" width="2" height="14" fill="#e9c46a"/>`,
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#8a5a2b'),
+                camadaBoca('#c9184a'),
+                `<rect x="9" y="16.9" width="6" height="1" fill="#ffd700"/><rect x="11" y="17" width="1" height="1" fill="#e63946"/>`,
+                `<rect x="6" y="2" width="12" height="2" fill="#e9c46a"/>`,
+                `<rect x="7" y="1.4" width="10" height="1.3" fill="#ffd700"/><rect x="8" y="-0.4" width="1.3" height="2" fill="#ffd700"/><rect x="10.6" y="-1.1" width="1.5" height="2.7" fill="#ffd700"/><rect x="13.3" y="-0.4" width="1.3" height="2" fill="#ffd700"/><rect x="10.7" y="0.1" width="1.5" height="1.3" fill="#e63946"/>`,
+            ];
+        },
+    },
+    {
+        id: 'rei',
+        nome: 'Rei',
+        fundo: '#6a040f',
+        camadas() {
+            const pele = '#e0ac69';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#9d0208'),
+                `<rect x="1" y="19" width="22" height="0.7" fill="#ffd700"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#4a2c14'),
+                camadaBoca(),
+                `<rect x="9" y="14.3" width="5" height="1" fill="#5c3a1e"/><rect x="7.5" y="13.9" width="9" height="0.9" fill="#5c3a1e"/><rect x="8.3" y="14.9" width="7.3" height="2" fill="#5c3a1e"/>`,
+                `<rect x="6" y="2" width="12" height="1" fill="#5c3a1e"/>`,
+                `<rect x="6.5" y="1.4" width="11" height="1.4" fill="#ffd700"/><rect x="7.5" y="-0.5" width="1.4" height="2.2" fill="#ffd700"/><rect x="10.6" y="-0.8" width="1.6" height="2.5" fill="#ffd700"/><rect x="14" y="-0.5" width="1.4" height="2.2" fill="#ffd700"/><rect x="10.7" y="0" width="1.5" height="1.2" fill="#2a9d8f"/>`,
+            ];
+        },
+    },
+    {
+        id: 'alien',
+        nome: 'Alienígena',
+        fundo: '#b5e48c',
+        camadas() {
+            const pele = '#7ed957';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#7209b7'),
+                `<rect x="10.5" y="16.8" width="3" height="2.7" fill="${pele}"/>`,
+                `<rect x="5" y="9.3" width="1.6" height="2.6" fill="${pele}"/><rect x="17.4" y="9.3" width="1.6" height="2.6" fill="${pele}"/>`,
+                `<rect x="6.5" y="2" width="11" height="13.5" fill="${pele}"/>`,
+                `<rect x="7.3" y="9" width="4" height="3.6" fill="${INK}"/><rect x="12.7" y="9" width="4" height="3.6" fill="${INK}"/>`,
+                `<rect x="10.5" y="15" width="3" height="0.5" fill="#3d5a3d"/>`,
+            ];
+        },
+    },
+    {
+        id: 'vampiro',
+        nome: 'Vampiro',
+        fundo: '#1a0000',
+        camadas() {
+            const pele = '#f4e4d4';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#0d0d0d'),
+                `<rect x="8.3" y="15" width="2" height="3.5" fill="#6a0400"/><rect x="13.7" y="15" width="2" height="3.5" fill="#6a0400"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#0d0d0d'),
+                `<rect x="9.5" y="15.3" width="5" height="1" fill="#6a0400"/><rect x="10" y="16.2" width="0.7" height="1" fill="#fff"/><rect x="13.3" y="16.2" width="0.7" height="1" fill="#fff"/>`,
+                `<rect x="6" y="2" width="12" height="3" fill="#0d0d0d"/><rect x="10.8" y="4.5" width="2.4" height="1.3" fill="#0d0d0d"/>`,
+            ];
+        },
+    },
+    {
+        id: 'roqueiro',
+        nome: 'Roqueiro',
+        fundo: '#fb8500',
+        camadas() {
+            const pele = '#e0ac69';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#1c1c1c'),
+                `<rect x="4" y="20" width="1" height="1" fill="#adb5bd"/><rect x="19" y="20" width="1" height="1" fill="#adb5bd"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaBoca(),
+                `<rect x="7.3" y="9.7" width="3.4" height="2.6" fill="${INK}"/><rect x="13.3" y="9.7" width="3.4" height="2.6" fill="${INK}"/><rect x="10.7" y="10.6" width="2.6" height="0.4" fill="${INK}"/>`,
+                `<rect x="10.5" y="-1.6" width="3" height="5.6" fill="#ff006e"/>`,
+            ];
+        },
+    },
+    {
+        id: 'medica',
+        nome: 'Médica(o)',
+        fundo: '#8ecae6',
+        camadas() {
+            const pele = '#ffdbac';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#f8f9fa'),
+                `<rect x="9" y="19" width="2" height="2" fill="#e9ecef"/><rect x="13" y="19" width="2" height="2" fill="#e9ecef"/>`,
+                `<rect x="9.5" y="17" width="1" height="2.6" fill="#212529"/><rect x="13.5" y="17" width="1" height="2.6" fill="#212529"/><rect x="10.5" y="19.2" width="3" height="1" fill="#212529"/><rect x="11.3" y="20" width="1.4" height="1.4" fill="#adb5bd"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#5c3a1e'),
+                camadaBoca(),
+                `<rect x="7" y="2" width="10" height="2.5" fill="#3d2b1f"/><rect x="10" y="-0.3" width="4" height="2.8" fill="#3d2b1f"/>`,
+            ];
+        },
+    },
+];
 
-    const camadas = [
-        fundo, ombros, pescoco, orelhas, cabeloTras, cabeca, sombraQueixo,
-        sobrancelhas, olhos, nariz, boca, cabeloFrente, barba, acessorio,
-    ].join('');
+function obterPersonagemUsuario(email) {
+    const salvo = localStorage.getItem(`personagem_${email}`);
+    return PERSONAGENS.find(p => p.id === salvo) || PERSONAGENS[0];
+}
 
-    return `<svg viewBox="0 -2 24 26" width="${tamanho}" height="${Math.round(tamanho * 26 / 24)}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">${camadas}</svg>`;
+function salvarPersonagemUsuario(email, id) {
+    localStorage.setItem(`personagem_${email}`, id);
+}
+
+function gerarPersonagemSVG(id, tamanho) {
+    const personagem = PERSONAGENS.find(p => p.id === id) || PERSONAGENS[0];
+    return montarSVG(personagem.camadas(), tamanho);
 }

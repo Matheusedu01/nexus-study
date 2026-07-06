@@ -66,8 +66,8 @@
         document.head.appendChild(style);
         }
 
-        const cfg = typeof obterAvatarUsuario === 'function' ? obterAvatarUsuario(user.email) : null;
-        const avatarHtml = cfg && typeof gerarAvatarSVG === 'function' ? gerarAvatarSVG(cfg, 22) : '';
+        const personagem = typeof obterPersonagemUsuario === 'function' ? obterPersonagemUsuario(user.email) : null;
+        const avatarHtml = personagem && typeof gerarPersonagemSVG === 'function' ? gerarPersonagemSVG(personagem.id, 22) : '';
 
         const nomeDiv = document.createElement('div');
         nomeDiv.textContent = user.name || 'Usuário';

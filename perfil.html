@@ -53,61 +53,51 @@
             box-shadow: 3px 3px 0 var(--pixel-ink);
         }
 
-        .avatar-opcao-grupo {
-            margin-bottom: 16px;
+        .personagem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+            gap: 10px;
         }
 
-        .avatar-opcao-titulo {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .avatar-swatches {
+        .personagem-item {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .avatar-swatch-cor {
-            width: 30px;
-            height: 30px;
-            border: 3px solid #23233a;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 6px;
+            background: #14141f;
+            border: 2px solid #23233a;
             cursor: pointer;
-            padding: 0;
             transition: transform 0.1s ease;
         }
 
-        .avatar-swatch-cor:hover {
+        .personagem-item:hover {
             transform: translate(-1px, -1px);
         }
 
-        .avatar-swatch-cor.selecionado {
+        .personagem-item.selecionado {
             border-color: #00f5d4;
             box-shadow: 2px 2px 0 #05050a;
         }
 
-        .avatar-swatch-opcao {
-            padding: 8px 12px;
-            background: #14141f;
-            color: rgba(255, 255, 255, 0.7);
-            border: 2px solid #23233a;
-            cursor: pointer;
-            font-size: 12px;
-            font-family: 'Inter', sans-serif;
-            transition: transform 0.1s ease;
+        .personagem-item svg {
+            image-rendering: pixelated;
         }
 
-        .avatar-swatch-opcao:hover {
-            transform: translate(-1px, -1px);
-            background: #1c1c2b;
+        .personagem-nome {
+            font-size: 9.5px;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            line-height: 1.2;
         }
 
-        .avatar-swatch-opcao.selecionado {
-            border-color: #3a86ff;
-            color: #3a86ff;
-            background: rgba(58, 134, 255, 0.1);
+        body.light-theme .personagem-item {
+            background: #f0f2f5;
+            border-color: #d5d8e0;
+        }
+
+        body.light-theme .personagem-nome {
+            color: rgba(0, 0, 0, 0.6);
         }
 
         .perfil-frase-input {
@@ -293,17 +283,17 @@
     <main>
         <div class="hero-section">
             <h1>👤 Meu Perfil</h1>
-            <p>Monte seu avatar, escreva sua frase e acompanhe seu progresso.</p>
+            <p>Escolha seu personagem, escreva sua frase e acompanhe seu progresso.</p>
         </div>
 
         <div class="perfil-grid">
             <div>
                 <div class="perfil-card">
-                    <h2>🎨 MEU AVATAR</h2>
+                    <h2>🎨 MEU PERSONAGEM</h2>
                     <div class="avatar-preview-box">
                         <div id="avatarPreview"></div>
                     </div>
-                    <div id="avatarEditor"></div>
+                    <div class="personagem-grid" id="personagemGrid"></div>
                 </div>
             </div>
 
@@ -346,51 +336,35 @@
         loadTheme();
 
         // ========================================
-        // AVATAR
+        // AVATAR (personagens prontos)
         // ========================================
-        let avatarConfig = obterAvatarUsuario(user.email);
+        let personagemAtual = obterPersonagemUsuario(user.email);
 
         function renderizarPreview() {
-            document.getElementById('avatarPreview').innerHTML = gerarAvatarSVG(avatarConfig, 140);
+            document.getElementById('avatarPreview').innerHTML = gerarPersonagemSVG(personagemAtual.id, 140);
         }
 
-        function renderizarEditorAvatar() {
-            const grupos = [
-                { chave: 'fundo', titulo: 'Fundo', tipo: 'cor', opcoes: AVATAR_OPCOES.fundos },
-                { chave: 'pele', titulo: 'Tom de pele', tipo: 'cor', opcoes: AVATAR_OPCOES.peles },
-                { chave: 'cabelo', titulo: 'Cabelo', tipo: 'opcao', opcoes: AVATAR_OPCOES.cabelos },
-                { chave: 'corCabelo', titulo: 'Cor do cabelo', tipo: 'cor', opcoes: AVATAR_OPCOES.coresCabelo },
-                { chave: 'barba', titulo: 'Barba', tipo: 'opcao', opcoes: AVATAR_OPCOES.barbas },
-                { chave: 'roupaCor', titulo: 'Cor da roupa', tipo: 'cor', opcoes: AVATAR_OPCOES.roupaCores },
-                { chave: 'acessorio', titulo: 'Acessório', tipo: 'opcao', opcoes: AVATAR_OPCOES.acessorios },
-            ];
+        function renderizarGridPersonagens() {
+            document.getElementById('personagemGrid').innerHTML = PERSONAGENS.map(p => `
+                <button type="button" class="personagem-item ${p.id === personagemAtual.id ? 'selecionado' : ''}" data-id="${p.id}" title="${p.nome}">
+                    ${gerarPersonagemSVG(p.id, 48)}
+                    <span class="personagem-nome">${p.nome}</span>
+                </button>
+            `).join('');
 
-            document.getElementById('avatarEditor').innerHTML = grupos.map(grupo => {
-                const swatches = grupo.tipo === 'cor'
-                    ? grupo.opcoes.map(cor => `<button type="button" class="avatar-swatch-cor ${avatarConfig[grupo.chave] === cor ? 'selecionado' : ''}" style="background:${cor};" data-chave="${grupo.chave}" data-valor="${cor}" title="${cor}"></button>`).join('')
-                    : grupo.opcoes.map(op => `<button type="button" class="avatar-swatch-opcao ${avatarConfig[grupo.chave] === op.id ? 'selecionado' : ''}" data-chave="${grupo.chave}" data-valor="${op.id}">${op.nome}</button>`).join('');
-
-                return `
-                    <div class="avatar-opcao-grupo">
-                        <div class="avatar-opcao-titulo">${grupo.titulo}</div>
-                        <div class="avatar-swatches">${swatches}</div>
-                    </div>
-                `;
-            }).join('');
-
-            document.querySelectorAll('#avatarEditor [data-chave]').forEach(btn => {
+            document.querySelectorAll('#personagemGrid [data-id]').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    avatarConfig[btn.dataset.chave] = btn.dataset.valor;
-                    salvarAvatarUsuario(user.email, avatarConfig);
+                    personagemAtual = PERSONAGENS.find(p => p.id === btn.dataset.id);
+                    salvarPersonagemUsuario(user.email, personagemAtual.id);
                     renderizarPreview();
-                    renderizarEditorAvatar();
+                    renderizarGridPersonagens();
                     if (typeof atualizarAvatarCabecalho === 'function') atualizarAvatarCabecalho();
                 });
             });
         }
 
         renderizarPreview();
-        renderizarEditorAvatar();
+        renderizarGridPersonagens();
 
         // ========================================
         // FRASE / STATUS
