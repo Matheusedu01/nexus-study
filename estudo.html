@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudando - Nexus Study</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/estudo.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button onclick="voltarDashboard()" class="btn-back">← Voltar</button>
+            <h1 id="studyTitle">Título do Estudo</h1>
+            <div class="progress-info">
+                <span id="progressText">0%</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ======================================== -->
+        <!-- TRADUTOR DE PALAVRAS                    -->
+        <!-- ======================================== -->
+        <div class="tradutor-palavras-container">
+            <div class="tradutor-header-row">
+                <h3 class="tradutor-titulo">🔍 Tradutor de Palavras</h3>
+                <span class="tradutor-dica">Clique em qualquer palavra do texto para traduzir</span>
+            </div>
+
+            <!-- Busca Manual -->
+            <div class="tradutor-busca-row">
+                <input type="text" id="palavraBusca" placeholder="Digite uma palavra em inglês..." class="tradutor-input" onkeydown="if(event.key==='Enter') traduzirPalavra()">
+                <button onclick="traduzirPalavra()" class="btn-traduzir">
+                    🔍 Traduzir
+                </button>
+                <button onclick="limparTraducao()" class="btn-limpar-traducao">
+                    ✕ Limpar
+                </button>
+            </div>
+
+            <!-- Área de Tradução -->
+            <div id="areaTraducao" class="area-traducao">
+                <div class="area-traducao-grid">
+                    <div>
+                        <div class="traducao-label">Palavra em Inglês</div>
+                        <div id="palavraIngles" class="palavra-ingles"></div>
+                    </div>
+                    <div>
+                        <div class="traducao-label">Tradução em Português</div>
+                        <div id="palavraPortugues" class="palavra-portugues"></div>
+                    </div>
+                </div>
+                <div id="exemploTraducao" class="exemplo-traducao">
+                    <!-- Exemplo será carregado aqui -->
+                </div>
+                <div class="traducao-acoes">
+                    <button onclick="ouvirPalavra()" class="btn-ouvir-palavra">
+                        🔊 Ouvir Pronúncia
+                    </button>
+                    <button onclick="copiarTraducaoPalavra()" class="btn-copiar-traducao-palavra">
+                        📋 Copiar Tradução
+                    </button>
+                </div>
+            </div>
+
+            <!-- Histórico de Palavras -->
+            <div id="historicoPalavras" class="historico-palavras-lista">
+                <!-- Histórico será carregado aqui -->
+            </div>
+        </div>
+        <div class="trilha-info-bar">
+            <span id="trilhaInfo">📚 Trilha: Nome da Trilha</span>
+            <span id="moduloInfo">📖 Módulo: Nome do Módulo</span>
+        </div>
+
+        <div class="study-container">
+            <div class="study-nav-bar">
+                <div class="section-dots" id="sectionDots"></div>
+                <button class="btn-indice-toggle" onclick="toggleIndice()">📑 Índice</button>
+            </div>
+
+            <div class="indice-panel" id="indicePanel">
+                <div class="indice-lista" id="indiceLista"></div>
+            </div>
+
+            <div class="study-content" id="studyContent">
+                <!-- Conteúdo será carregado aqui -->
+            </div>
+
+            <div class="study-controls">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="controls-buttons">
+                    <button onclick="previousSection()" class="btn-nav">⬅ Anterior</button>
+                    <button onclick="marcarProgresso()" class="btn-progress">📌 Marcar como Concluído</button>
+                    <button onclick="nextSection()" class="btn-nav">Próximo ➡</button>
+                    <button onclick="exportPDF()" class="btn-export">📄 Exportar PDF</button>
+                </div>
+                <div class="section-info">
+                    <span id="sectionInfo">Seção 1 de 1</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="notes-container">
+            <h3>📝 Minhas Anotações</h3>
+            <textarea id="studyNotes" placeholder="Faça suas anotações aqui..." rows="4"></textarea>
+            <button onclick="saveNotes()" class="btn-save-notes">Salvar Anotações</button>
+        </div>
+    </main>
+
+    <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        ↑
+    </button>
+
+    <!-- ======================================== -->
+    <!-- TOASTS DE NOTIFICAÇÃO                    -->
+    <!-- ======================================== -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- ======================================== -->
+    <!-- MODAL DE CONCLUSÃO                       -->
+    <!-- ======================================== -->
+    <div id="modalConcluido" class="modal-concluido">
+        <div class="modal-concluido-content">
+            <div class="modal-concluido-icon" id="modalConcluidoIcon">🎉</div>
+            <h2 id="modalConcluidoTitulo">Estudo concluído!</h2>
+            <p id="modalConcluidoTexto"></p>
+            <div class="modal-concluido-buttons" id="modalConcluidoBotoes"></div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/conquistas.js"></script>
+    <script src="js/conteudo-render.js"></script>
+    <script src="js/estudo.js"></script>
+    <script src="js/calculadora.js"></script>
+    <script src="js/caderno.js"></script>
+    <script src="js/pomodoro.js"></script>
+    <script src="js/tarefas.js"></script>
+    <script src="js/retro-fx.js"></script>
+</body>
+</html>

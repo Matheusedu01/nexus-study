@@ -1,0 +1,128 @@
+{
+  "trilhas": [
+    {
+      "id": 1,
+      "titulo": "Foco Total na Prova da ETEC",
+      "descricao": "Prepare-se para o vestibulinho da ETEC com esta trilha completa! Do básico ao avançado.",
+      "nivel": "Iniciante",
+      "icone": "🎯",
+      "cor": "#00f5d4",
+      "tags": ["ETEC", "vestibulinho", "matemática", "português"],
+      "duracao": "8 semanas",
+      "estudos": [
+        {
+          "id": 1,
+          "titulo": "Matemática - Operações Básicas",
+          "descricao": "Revisão de adição, subtração, multiplicação e divisão",
+          "modulo": "Módulo 1: Matemática Básica",
+          "ordem": 1,
+          "conteudo": "# Operações Básicas\n\nA matemática é a base de tudo...\n\n## Adição\n\nA adição é a operação de juntar quantidades...\n\n## Subtração\n\nA subtração é a operação de retirar quantidades..."
+        },
+        {
+          "id": 2,
+          "titulo": "Matemática - Frações e Porcentagem",
+          "descricao": "Entenda frações, porcentagens e suas aplicações no dia a dia",
+          "modulo": "Módulo 1: Matemática Básica",
+          "ordem": 2,
+          "conteudo": "# Frações\n\nFrações representam partes de um todo...\n\n# Porcentagem\n\nPorcentagem é uma forma de expressar uma proporção..."
+        },
+        {
+          "id": 3,
+          "titulo": "Matemática - Equações",
+          "descricao": "Aprenda a resolver equações do 1º e 2º grau",
+          "modulo": "Módulo 1: Matemática Básica",
+          "ordem": 3,
+          "conteudo": "# Equações do 1º Grau\n\nEquações são sentenças matemáticas que expressam igualdade..."
+        },
+        {
+          "id": 4,
+          "titulo": "Raciocínio Lógico - Sequências",
+          "descricao": "Aprenda a identificar e resolver sequências lógicas",
+          "modulo": "Módulo 2: Raciocínio Lógico",
+          "ordem": 4,
+          "conteudo": "# Sequências Lógicas\n\nSequências são padrões que se repetem..."
+        },
+        {
+          "id": 5,
+          "titulo": "Raciocínio Lógico - Problemas",
+          "descricao": "Resolva problemas de lógica com métodos práticos",
+          "modulo": "Módulo 2: Raciocínio Lógico",
+          "ordem": 5,
+          "conteudo": "# Problemas de Lógica\n\nA lógica é a arte de pensar corretamente..."
+        },
+        {
+          "id": 6,
+          "titulo": "Português - Interpretação de Texto",
+          "descricao": "Técnicas para interpretar textos e responder questões",
+          "modulo": "Módulo 3: Português",
+          "ordem": 6,
+          "conteudo": "# Interpretação de Texto\n\nInterpretar é entender o que o autor quis dizer..."
+        },
+        {
+          "id": 7,
+          "titulo": "Português - Gramática",
+          "descricao": "Revisão dos principais tópicos de gramática",
+          "modulo": "Módulo 3: Português",
+          "ordem": 7,
+          "conteudo": "# Gramática\n\nA gramática é o conjunto de regras da língua..."
+        },
+        {
+          "id": 8,
+          "titulo": "Simulado Completo",
+          "descricao": "Teste seus conhecimentos com um simulado da ETEC",
+          "modulo": "Módulo 4: Simulado",
+          "ordem": 8,
+          "conteudo": "# Simulado ETEC\n\nResponda as questões abaixo como se fosse a prova real..."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "titulo": "JavaScript do Zero ao Avançado",
+      "descricao": "Domine JavaScript desde os fundamentos até tópicos avançados para desenvolvimento web",
+      "nivel": "Intermediário",
+      "icone": "🚀",
+      "cor": "#ffd700",
+      "tags": ["JavaScript", "programação", "web", "frontend"],
+      "duracao": "12 semanas",
+      "estudos": [
+        {
+          "id": 1,
+          "titulo": "Fundamentos do JavaScript",
+          "descricao": "Variáveis, tipos de dados e operadores",
+          "modulo": "Módulo 1: Fundamentos",
+          "ordem": 1,
+          "conteudo": "# Variáveis\n\nEm JavaScript, usamos var, let e const..."
+        },
+        {
+          "id": 2,
+          "titulo": "Funções e Escopo",
+          "descricao": "Entenda funções, arrow functions e escopo",
+          "modulo": "Módulo 1: Fundamentos",
+          "ordem": 2,
+          "conteudo": "# Funções\n\nFunções são blocos de código reutilizáveis..."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "titulo": "Ciência de Dados com Python",
+      "descricao": "Domine Python para análise de dados, visualização e machine learning do zero",
+      "nivel": "Avançado",
+      "icone": "📊",
+      "cor": "#ff4444",
+      "tags": ["Python", "dados", "machine learning", "análise"],
+      "duracao": "16 semanas",
+      "estudos": [
+        {
+          "id": 1,
+          "titulo": "Python Básico",
+          "descricao": "Fundamentos da linguagem Python",
+          "modulo": "Módulo 1: Fundamentos",
+          "ordem": 1,
+          "conteudo": "# Python\n\nPython é uma linguagem de programação de alto nível..."
+        }
+      ]
+    }
+  ]
+}

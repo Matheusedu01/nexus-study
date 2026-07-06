@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Study - Plataforma de Estudos</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/style.css">  <!-- ← CAMINHO CORRETO -->
+</head>
+<body>
+    <!-- Partículas flutuantes -->
+    <div class="particles" id="particles"></div>
+
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo-container">
+                <div class="logo-icon">⚡</div>
+                <h1>NEXUS STUDY</h1>
+                <p class="subtitle">✦ Plataforma de Estudos ✦</p>
+            </div>
+            
+            <h2 id="formTitle">🔐 Acessar Sistema</h2>
+
+            <!-- Formulário de Login -->
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>📧 E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                    <span class="input-icon">✉</span>
+                </div>
+                
+                <div class="input-group">
+                    <label>🔒 Senha</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                    <span class="input-icon">🔑</span>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    <span class="status-dot"></span> Entrar
+                </button>
+                
+                <p class="register-link">
+                    Não tem conta? <a href="#" onclick="showRegister()">Cadastre-se</a>
+                </p>
+            </form>
+
+            <!-- Formulário de Cadastro -->
+            <form id="registerForm" style="display: none;">
+                <div class="input-group">
+                    <label>👤 Nome</label>
+                    <input type="text" id="regName" placeholder="Seu nome" required>
+                </div>
+                <div class="input-group">
+                    <label>📧 E-mail</label>
+                    <input type="email" id="regEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label>🔒 Senha</label>
+                    <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required>
+                </div>
+                <button type="submit" class="btn-login">
+                    <span class="status-dot"></span> Cadastrar
+                </button>
+                <p class="register-link">
+                    Já tem conta? <a href="#" onclick="showLogin()">Faça login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>  <!-- ← CAMINHO CORRETO -->
+    <script>
+        // Gerar partículas
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 20) + 's';
+                particle.style.background = `rgba(${100 + Math.random() * 155}, ${100 + Math.random() * 155}, 255, ${0.1 + Math.random() * 0.3})`;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+    </script>
+</body>
+</html>

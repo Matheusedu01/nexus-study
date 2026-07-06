@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Study - Trilhas</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="js/seed-dados.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/conquistas.js"></script>
+    <style>
+        /* O visual do hero/card/botões/tags agora vive só em css/dashboard.css
+           (tema retro/8-bit); esse bloco duplicava as mesmas classes com o
+           visual antigo e, por vir depois do <link>, sempre ganhava. */
+        .trilhas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+        }
+
+        .loading-trilhas {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .loading-trilhas .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 15px;
+            border: 3px solid rgba(255, 255, 255, 0.06);
+            border-top: 3px solid #00f5d4;
+            border-radius: 50%;
+            animation: girarSpinner 0.8s linear infinite;
+        }
+
+        @keyframes girarSpinner {
+            to { transform: rotate(360deg); }
+        }
+
+        body.light-theme .loading-trilhas {
+            color: rgba(0, 0, 0, 0.62);
+        }
+
+        body.light-theme .loading-trilhas .spinner {
+            border-color: rgba(0, 0, 0, 0.08);
+            border-top-color: #3a86ff;
+        }
+
+        /* Modal de Reset */
+        .modal-reset {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-reset-content {
+            background: #101018;
+            border: 3px solid #23233a;
+            box-shadow: 5px 5px 0 #05050a;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 0;
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        .modal-reset-content .icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+
+        .modal-reset-content h2 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .modal-reset-content p {
+            color: rgba(255, 255, 255, 0.62);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .modal-reset-content .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .modal-reset-content .buttons button {
+            padding: 10px 30px;
+            border: 2px solid #05050a;
+            box-shadow: 3px 3px 0 #05050a;
+            border-radius: 0;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .modal-reset-content .buttons button:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0 0 0 #05050a;
+        }
+
+        .btn-cancelar-reset {
+            background: #14141f;
+            color: #fff;
+            border-color: #2a2a3d;
+        }
+
+        .btn-cancelar-reset:hover {
+            background: #1c1c2b;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 #05050a;
+        }
+
+        .btn-confirmar-reset {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn-confirmar-reset:hover {
+            background: #cc0000;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 #05050a;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Tema Claro */
+        body.light-theme .hero-section {
+            background: #fff;
+        }
+
+        body.light-theme .trilha-card {
+            background: #fff;
+        }
+
+        body.light-theme .trilha-titulo {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .trilha-desc {
+            color: #555;
+        }
+
+        body.light-theme .trilha-meta {
+            border-top-color: #e2e5ec;
+        }
+
+        body.light-theme .trilha-meta strong {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .modal-reset-content {
+            background: #fff;
+            border-color: #1a1a2e;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-theme .modal-reset-content h2 {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .modal-reset-content p {
+            color: #666;
+        }
+
+        body.light-theme .btn-cancelar-reset {
+            background: #f7f8fa;
+            color: #1a1a2e;
+            border-color: #1a1a2e;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 28px;
+            }
+
+            .trilhas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .trilha-actions {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+        }
+
+        /* ======================================== */
+        /* BOTÃO CONQUISTAS NO HEADER              */
+        /* ======================================== */
+        .btn-conquistas {
+            padding: 8px 16px;
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border: 3px solid #ffd700;
+            border-radius: 0;
+            box-shadow: 3px 3px 0 #05050a;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .btn-conquistas:hover {
+            background: rgba(255, 215, 0, 0.18);
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 #05050a;
+        }
+
+        .btn-conquistas:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0 0 0 #05050a;
+        }
+
+        .btn-tradutor {
+            padding: 8px 16px;
+            background: rgba(131, 56, 236, 0.1);
+            color: #c77dff;
+            border: 3px solid #8338ec;
+            border-radius: 0;
+            box-shadow: 3px 3px 0 #05050a;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .btn-tradutor:hover {
+            background: rgba(131, 56, 236, 0.2);
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 #05050a;
+        }
+
+        .btn-tradutor:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0 0 0 #05050a;
+        }
+
+        body.light-theme .btn-conquistas {
+            background: rgba(255, 200, 0, 0.15);
+            color: #a17700;
+            border-color: #b38600;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-theme .btn-tradutor {
+            background: rgba(131, 56, 236, 0.12);
+            color: #6420b8;
+            border-color: #8338ec;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><a href="dashboard.html" title="Voltar ao início">⚡ NEXUS STUDY</a></h1>
+            <div class="user-info">
+                <span id="userName">👤 Usuário</span>
+                
+                <!-- ✅ BOTÃO CONQUISTAS ADICIONADO AQUI -->
+                <a href="conquistas.html" class="btn-conquistas">🏆 Conquistas</a>
+                <a href="tradutor-musica.html" class="btn-tradutor">🎵 Tradutor</a>
+
+                <button onclick="toggleTheme()" class="btn-theme">
+                    🌙 Tema
+                </button>
+                <button onclick="logout()" class="btn-logout">⏻ Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero-section">
+            <h1 id="heroSaudacao">🚀 Escolha sua Trilha</h1>
+            <p id="heroSubtitulo">Selecione uma trilha e comece a estudar!</p>
+        </div>
+
+        <div class="meta-diaria-card">
+            <div class="meta-diaria-info">
+                <div class="meta-diaria-label">🎯 Meta Diária</div>
+                <div id="metaDiariaTexto" class="meta-diaria-texto">0 / 3 estudos hoje</div>
+                <div class="meta-diaria-progresso">
+                    <div id="metaDiariaBarra" class="meta-diaria-fill"></div>
+                </div>
+            </div>
+            <div class="meta-diaria-select-group">
+                <label for="metaDiariaSelect">Meta por dia:</label>
+                <select id="metaDiariaSelect" onchange="alterarMetaDiaria(this.value)">
+                    <option value="1">1 estudo</option>
+                    <option value="3">3 estudos</option>
+                    <option value="5">5 estudos</option>
+                    <option value="10">10 estudos</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="trilhasContainer" class="trilhas-grid">
+            <!-- Cards das trilhas serão carregados aqui -->
+            <div class="loading-trilhas">
+                <div class="spinner"></div>
+                <p>Carregando trilhas...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Reset -->
+    <div id="modalReset" class="modal-reset">
+        <div class="modal-reset-content">
+            <div class="icon">🔄</div>
+            <h2>Tem certeza?</h2>
+            <p>Isso vai <strong>resetar TODO o seu progresso</strong> nesta trilha.</p>
+            <div class="buttons">
+                <button class="btn-cancelar-reset" onclick="fecharModalReset()">Cancelar</button>
+                <button class="btn-confirmar-reset" onclick="confirmarReset()">Sim, resetar!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/calculadora.js"></script>
+    <script src="js/caderno.js"></script>
+    <script src="js/pomodoro.js"></script>
+    <script src="js/dicionario-flutuante.js"></script>
+    <script src="js/tarefas.js"></script>
+    <script src="js/retro-fx.js"></script>
+</body>
+</html>

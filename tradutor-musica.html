@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradutor de Músicas - Nexus Study</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .btn-voltar-header {
+            padding: 8px 16px;
+            background: #14141f;
+            color: #fff;
+            border: var(--pixel-border, 3px) solid #2a2a3d;
+            border-radius: 0;
+            box-shadow: 3px 3px 0 var(--pixel-ink, #05050a);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .btn-voltar-header:hover {
+            background: #1c1c2b;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 var(--pixel-ink, #05050a);
+        }
+
+        .btn-voltar-header:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0 0 0 var(--pixel-ink, #05050a);
+        }
+
+        body.light-theme .btn-voltar-header {
+            background: #fff;
+            color: #1a1a2e;
+            border-color: #1a1a2e;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-theme .btn-voltar-header:hover {
+            background: #f0f2f5;
+        }
+
+        .tradutor-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .tradutor-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tradutor-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ff6b6b, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tradutor-header p {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 16px;
+        }
+
+        .tradutor-header .badge-destaque {
+            display: inline-block;
+            background: rgba(0, 245, 212, 0.1);
+            color: #00f5d4;
+            padding: 5px 16px;
+            border: 2px solid #00f5d4;
+            border-radius: 0;
+            font-family: var(--pixel-font, monospace);
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 14px;
+            letter-spacing: 1px;
+        }
+
+        .search-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .search-area input {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 20px;
+            background: #14141f;
+            border: 2px solid #2a2a3d;
+            border-radius: 0;
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s ease;
+        }
+
+        .search-area input:focus {
+            outline: none;
+            border-color: #3a86ff;
+            box-shadow: 3px 3px 0 var(--pixel-ink, #05050a);
+        }
+
+        .search-area input::placeholder {
+            color: rgba(255, 255, 255, 0.57);
+        }
+
+        .btn-buscar {
+            padding: 14px 30px;
+            background: #3a86ff;
+            color: white;
+            border: var(--pixel-border, 3px) solid var(--pixel-ink, #05050a);
+            border-radius: 0;
+            box-shadow: 4px 4px 0 var(--pixel-ink, #05050a);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+
+        .btn-buscar:hover {
+            background: #518eff;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--pixel-ink, #05050a);
+        }
+
+        .btn-buscar:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0 0 0 var(--pixel-ink, #05050a);
+        }
+
+        .btn-buscar:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.59);
+        }
+
+        .loading .spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid #23233a;
+            border-top: 4px solid #3a86ff;
+            border-radius: 0;
+            animation: spin 0.8s steps(8) infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading .ia-info {
+            font-size: 12px;
+            font-family: var(--pixel-font, monospace);
+            letter-spacing: 0.5px;
+            color: rgba(255, 200, 0, 0.5);
+            margin-top: 14px;
+        }
+
+        .resultado-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .resultado-container .musica-info {
+            background: #101018;
+            border-radius: 0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: var(--pixel-border, 3px) solid #23233a;
+            box-shadow: 5px 5px 0 var(--pixel-ink, #05050a);
+        }
+
+        .resultado-container .musica-info h2 {
+            color: #fff;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .resultado-container .musica-info .artista {
+            color: rgba(255, 255, 255, 0.59);
+            font-size: 16px;
+        }
+
+        .resultado-container .musica-info .fonte {
+            color: rgba(255, 200, 0, 0.4);
+            font-size: 11px;
+            font-family: var(--pixel-font, monospace);
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .letra-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .letra-box {
+            background: #101018;
+            border-radius: 0;
+            padding: 25px;
+            border: var(--pixel-border, 3px) solid #3a86ff;
+            box-shadow: 5px 5px 0 var(--pixel-ink, #05050a);
+        }
+
+        .letra-box h3 {
+            color: #3a86ff;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .letra-box .letra-conteudo {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            font-size: 15px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .letra-box .letra-conteudo::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .letra-box .letra-conteudo::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .letra-box .letra-conteudo::-webkit-scrollbar-thumb {
+            background: rgba(58, 134, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .letra-box.traducao {
+            border-color: #ffd700;
+        }
+
+        .letra-box.traducao h3 {
+            color: #ffd700;
+        }
+
+        .acoes-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .btn-acao {
+            padding: 8px 20px;
+            border-radius: 0;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            border: 2px solid;
+            box-shadow: 3px 3px 0 var(--pixel-ink, #05050a);
+        }
+
+        .btn-acao:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 var(--pixel-ink, #05050a);
+        }
+
+        .btn-acao:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0 0 0 var(--pixel-ink, #05050a);
+        }
+
+        .btn-traduzir-novamente {
+            background: rgba(58, 134, 255, 0.12);
+            color: #3a86ff;
+            border-color: #3a86ff;
+        }
+
+        .btn-traduzir-novamente:hover {
+            background: rgba(58, 134, 255, 0.2);
+        }
+
+        .btn-traduzir-completa {
+            background: rgba(255, 200, 0, 0.12);
+            color: #ffd700;
+            border-color: #ffd700;
+        }
+
+        .btn-traduzir-completa:hover {
+            background: rgba(255, 200, 0, 0.2);
+        }
+
+        .btn-copiar-traducao {
+            background: rgba(0, 245, 212, 0.1);
+            color: #00f5d4;
+            border-color: #00f5d4;
+        }
+
+        .btn-copiar-traducao:hover {
+            background: rgba(0, 245, 212, 0.18);
+        }
+
+        .btn-copiar-letra {
+            background: #14141f;
+            color: rgba(255, 255, 255, 0.6);
+            border-color: #2a2a3d;
+        }
+
+        .btn-copiar-letra:hover {
+            background: #1c1c2b;
+        }
+
+        .frases-container {
+            margin-top: 25px;
+            background: #101018;
+            border-radius: 0;
+            padding: 20px;
+            border: var(--pixel-border, 3px) solid #23233a;
+            box-shadow: 5px 5px 0 var(--pixel-ink, #05050a);
+        }
+
+        .frases-container h3 {
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .frase-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #14141f;
+            border: 1px solid #23233a;
+            border-radius: 0;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .frase-item .en {
+            color: #3a86ff;
+            font-weight: 500;
+        }
+
+        .frase-item .pt {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .frase-item .btn-copiar {
+            padding: 4px 12px;
+            background: #1c1c2b;
+            color: rgba(255, 255, 255, 0.5);
+            border: 1px solid #2a2a3d;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .frase-item .btn-copiar:hover {
+            background: #23233a;
+        }
+
+        .btn-audio {
+            padding: 6px 14px;
+            background: rgba(0, 245, 212, 0.1);
+            color: #00f5d4;
+            border: 1px solid #00f5d4;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-audio:hover {
+            background: rgba(0, 245, 212, 0.18);
+        }
+
+        .erro-container {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 50, 50, 0.6);
+            background: #101018;
+            border: var(--pixel-border, 3px) solid #ff6b6b;
+            box-shadow: 5px 5px 0 var(--pixel-ink, #05050a);
+        }
+
+        .erro-container .erro-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .status-msg {
+            padding: 12px 20px;
+            border-radius: 0;
+            margin-bottom: 15px;
+            display: none;
+            border: 2px solid;
+            font-weight: 500;
+        }
+
+        .status-msg.info {
+            background: rgba(58, 134, 255, 0.1);
+            border-color: #3a86ff;
+            color: #3a86ff;
+            display: block;
+        }
+
+        .status-msg.success {
+            background: rgba(0, 245, 212, 0.1);
+            border-color: #00f5d4;
+            color: #00f5d4;
+            display: block;
+        }
+
+        .status-msg.error {
+            background: rgba(255, 50, 50, 0.1);
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+            display: block;
+        }
+
+        .status-msg.warning {
+            background: rgba(255, 200, 0, 0.1);
+            border-color: #ffd700;
+            color: #ffd700;
+            display: block;
+        }
+
+        /* Tema Claro */
+        body.light-theme .tradutor-header p {
+            color: rgba(0, 0, 0, 0.63);
+        }
+
+        body.light-theme .tradutor-header .badge-destaque {
+            background: rgba(0, 245, 212, 0.12);
+        }
+
+        body.light-theme .search-area input {
+            background: #fff;
+            border-color: #d5d8e0;
+            color: #1a1a2e;
+        }
+
+        body.light-theme .search-area input::placeholder {
+            color: rgba(0, 0, 0, 0.61);
+        }
+
+        body.light-theme .btn-buscar {
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-theme .btn-buscar:hover {
+            box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.18);
+        }
+
+        body.light-theme .loading {
+            color: rgba(0, 0, 0, 0.62);
+        }
+
+        body.light-theme .loading .spinner {
+            border-color: #d5d8e0;
+            border-top-color: #3a86ff;
+        }
+
+        body.light-theme .resultado-container .musica-info,
+        body.light-theme .letra-box,
+        body.light-theme .frases-container,
+        body.light-theme .erro-container {
+            background: #fff;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        body.light-theme .resultado-container .musica-info h2 {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .resultado-container .musica-info .artista {
+            color: rgba(0, 0, 0, 0.63);
+        }
+
+        body.light-theme .letra-box .letra-conteudo {
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        body.light-theme .frases-container h3 {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .frase-item {
+            background: #f7f8fa;
+            border-color: #e2e5ec;
+        }
+
+        body.light-theme .frase-item .pt {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        body.light-theme .frase-item .btn-copiar {
+            background: #fff;
+            color: rgba(0, 0, 0, 0.65);
+            border-color: #d5d8e0;
+        }
+
+        body.light-theme .frase-item .btn-copiar:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-theme .btn-copiar-letra {
+            background: rgba(0, 0, 0, 0.04);
+            color: rgba(0, 0, 0, 0.55);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+
+        body.light-theme .btn-copiar-letra:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .letra-container {
+                grid-template-columns: 1fr;
+            }
+
+            .search-area {
+                flex-direction: column;
+            }
+
+            .btn-buscar {
+                width: 100%;
+                text-align: center;
+            }
+
+            .tradutor-header h1 {
+                font-size: 24px;
+            }
+
+            .frase-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .acoes-container {
+                flex-direction: column;
+            }
+
+            .btn-acao {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><a href="dashboard.html" title="Voltar ao início">⚡ NEXUS STUDY</a></h1>
+            <div class="user-info">
+                <span id="userName">👤 Usuário</span>
+                <a href="dashboard.html" class="btn-voltar-header">← Voltar</a>
+                <button onclick="toggleTheme()" class="btn-theme">🌙 Tema</button>
+                <button onclick="logout()" class="btn-logout">⏻ Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="tradutor-container">
+            <div class="tradutor-header">
+                <h1>🎵 Tradutor de Músicas</h1>
+                <p>Digite o nome de uma música e receba a letra com tradução na hora!</p>
+                <span class="badge-destaque">🎧 Letra + Tradução</span>
+            </div>
+
+            <div id="statusMsg" class="status-msg"></div>
+
+            <div class="search-area">
+                <input type="text" id="inputMusica" placeholder="Ex: Shape of You, Imagine, Bohemian Rhapsody..." onkeydown="if(event.key==='Enter') buscarMusica()">
+                <input type="text" id="inputArtista" placeholder="Artista (opcional)" style="flex: 0.5; min-width: 150px;">
+                <button class="btn-buscar" id="btnBuscar" onclick="buscarMusica()">🔍 Buscar Música</button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>⏳ Buscando sua música...</p>
+                <p class="ia-info">Isso pode levar alguns segundos</p>
+            </div>
+
+            <div id="resultado" class="resultado-container">
+                <div class="musica-info">
+                    <h2 id="musicaTitulo">Título da Música</h2>
+                    <span class="artista" id="musicaArtista">Artista</span>
+                    <div class="fonte" id="fonteLetra">Tradução automática</div>
+                </div>
+
+                <div class="letra-container">
+                    <div class="letra-box">
+                        <h3>🎵 Letra em Inglês</h3>
+                        <div class="letra-conteudo" id="letraIngles">Carregando...</div>
+                    </div>
+                    <div class="letra-box traducao">
+                        <h3>📝 Tradução em Português</h3>
+                        <div class="letra-conteudo" id="letraPortugues">Carregando...</div>
+                    </div>
+                </div>
+
+                <!-- Ações -->
+                <div class="acoes-container">
+                    <button class="btn-acao btn-traduzir-novamente" onclick="traduzirNovamente()">
+                        🔄 Traduzir Novamente
+                    </button>
+                    <button class="btn-acao btn-traduzir-completa" onclick="traduzirCompleta()">
+                        🔥 Tradução Completa
+                    </button>
+                    <button class="btn-acao btn-copiar-traducao" onclick="copiarTraducao()">
+                        📋 Copiar Tradução
+                    </button>
+                    <button class="btn-acao btn-copiar-letra" onclick="copiarLetra()">
+                        📋 Copiar Letra em Inglês
+                    </button>
+                </div>
+
+                <div class="frases-container">
+                    <h3>📚 Frases para Praticar</h3>
+                    <div id="frasesContainer"></div>
+                </div>
+            </div>
+
+            <div id="erro" class="erro-container" style="display: none;">
+                <div class="erro-icon">😕</div>
+                <h3>Não foi possível encontrar a música</h3>
+                <p>Tente novamente com um nome diferente ou adicione o nome do artista.</p>
+                <p style="font-size: 13px; margin-top: 10px; color: rgba(255,255,255,0.2);">💡 Dica: tente com o nome completo da música e do artista.</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/tradutor-musica.js"></script>
+    <script>
+        // ========================================
+        // AUTENTICAÇÃO
+        // ========================================
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+        document.getElementById('userName').textContent = `👤 ${user.name}`;
+
+        // toggleTheme(), loadTheme() e logout() vêm de js/utils.js
+        loadTheme();
+
+        // ========================================
+        // VERIFICAR CHAVE API
+        // ========================================
+        function verificarChaveAPI() {
+            // A tradução funciona com DeepL OU Gemini configurado (o DeepL é
+            // tentado primeiro); só bloqueia se nenhum dos dois estiver disponível.
+            if (typeof deeplConfigurado === 'function' && deeplConfigurado()) return true;
+            if (!GEMINI_API_KEY || GEMINI_API_KEY === 'SUA_CHAVE_AQUI') {
+                mostrarStatus('⚠️ Configure sua chave do DeepL ou do Gemini no arquivo js/config.js', 'warning');
+                return false;
+            }
+            return true;
+        }
+
+        // ========================================
+        // FUNÇÃO: Contar Palavras em Inglês
+        // ========================================
+        function contarPalavrasIngles(texto) {
+            if (!texto) return 0;
+            
+            const palavrasComunsIngles = [
+                'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i',
+                'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
+                'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she',
+                'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their',
+                'what', 'so', 'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go',
+                'me', 'when', 'make', 'can', 'like', 'time', 'no', 'just', 'him', 'know',
+                'take', 'people', 'into', 'year', 'your', 'good', 'some', 'could', 'them',
+                'see', 'other', 'than', 'then', 'now', 'look', 'only', 'come', 'its', 'over',
+                'think', 'also', 'back', 'after', 'use', 'two', 'how', 'our', 'work', 'first',
+                'well', 'way', 'even', 'new', 'want', 'because', 'any', 'these', 'give', 'day',
+                'most', 'us', 'is', 'was', 'are', 'were', 'been', 'being', 'has', 'had',
+                'oh', 'yeah', 'baby', 'girl', 'boy', 'love', 'heart', 'soul', 'dream'
+            ];
+            
+            const palavras = texto.toLowerCase().split(/\s+/);
+            let count = 0;
+            
+            for (const palavra of palavras) {
+                const limpa = palavra.replace(/[^a-z]/g, '');
+                if (limpa.length > 2 && palavrasComunsIngles.includes(limpa)) {
+                    count++;
+                }
+            }
+            
+            return count;
+        }
+
+        // ========================================
+        // FUNÇÃO: Buscar Música
+        // ========================================
+        async function buscarMusica() {
+            const musica = document.getElementById('inputMusica').value.trim();
+            const artista = document.getElementById('inputArtista').value.trim();
+            
+            if (!musica) {
+                mostrarStatus('⚠️ Digite o nome de uma música!', 'error');
+                return;
+            }
+
+            if (!verificarChaveAPI()) {
+                return;
+            }
+
+            const btn = document.getElementById('btnBuscar');
+            const loading = document.getElementById('loading');
+            const resultado = document.getElementById('resultado');
+            const erro = document.getElementById('erro');
+            const statusMsg = document.getElementById('statusMsg');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Buscando...';
+            loading.style.display = 'block';
+            resultado.style.display = 'none';
+            erro.style.display = 'none';
+            statusMsg.style.display = 'none';
+
+            try {
+                mostrarStatus('🎵 Buscando letra da música...', 'info');
+
+                const letra = await buscarLetraMusica(musica, artista);
+                
+                if (!letra) {
+                    throw new Error('Não foi possível gerar a letra');
+                }
+
+                mostrarStatus('📝 Traduzindo para o português...', 'info');
+
+                let traducao = await traduzirTexto(letra, 'português');
+                
+                // Verifica se a tradução está em português
+                if (traducao) {
+                    const palavrasIngles = contarPalavrasIngles(traducao);
+                    const totalPalavras = traducao.split(/\s+/).length;
+                    const porcentagemIngles = totalPalavras > 0 ? (palavrasIngles / totalPalavras) * 100 : 0;
+                    
+                    console.log(`📊 Palavras em inglês: ${porcentagemIngles.toFixed(1)}%`);
+                    
+                    // Se tiver mais de 20% em inglês, tenta de novo
+                    if (porcentagemIngles > 20 && totalPalavras > 10) {
+                        mostrarStatus('🔄 Refinando a tradução...', 'warning');
+                        traducao = await traduzirComGeminiProForte(letra);
+                    }
+                }
+                
+                if (!traducao) {
+                    throw new Error('Não foi possível traduzir');
+                }
+
+                document.getElementById('musicaTitulo').textContent = musica;
+                document.getElementById('musicaArtista').textContent = artista || 'Artista desconhecido';
+                document.getElementById('letraIngles').textContent = letra;
+                document.getElementById('letraPortugues').textContent = traducao;
+                document.getElementById('fonteLetra').textContent = '✨ Letra e tradução prontas';
+
+                gerarFrasesPraticas();
+
+                mostrarStatus('✅ Música processada com sucesso!', 'success');
+
+                loading.style.display = 'none';
+                resultado.style.display = 'block';
+                erro.style.display = 'none';
+
+            } catch (error) {
+                console.error('Erro:', error);
+                loading.style.display = 'none';
+                resultado.style.display = 'none';
+                erro.style.display = 'block';
+                mostrarStatus('❌ ' + error.message, 'error');
+            }
+
+            btn.disabled = false;
+            btn.textContent = '🔍 Buscar Música';
+        }
+
+        // ========================================
+        // FUNÇÃO: Traduzir Novamente
+        // ========================================
+        async function traduzirNovamente() {
+            const letra = document.getElementById('letraIngles').textContent;
+            if (!letra || letra === 'Carregando...') {
+                mostrarStatus('⚠️ Não há letra para traduzir!', 'error');
+                return;
+            }
+            
+            mostrarStatus('🔄 Traduzindo novamente...', 'info');
+            
+            let traducao = await traduzirTexto(letra, 'português');
+            
+            // Verifica se a tradução está em português
+            if (traducao) {
+                const palavrasIngles = contarPalavrasIngles(traducao);
+                const totalPalavras = traducao.split(/\s+/).length;
+                const porcentagemIngles = totalPalavras > 0 ? (palavrasIngles / totalPalavras) * 100 : 0;
+                
+                if (porcentagemIngles > 20 && totalPalavras > 10) {
+                    traducao = await traduzirComGeminiProForte(letra);
+                }
+            }
+            
+            if (traducao) {
+                document.getElementById('letraPortugues').textContent = traducao;
+                mostrarStatus('✅ Tradução atualizada!', 'success');
+            } else {
+                mostrarStatus('❌ Erro ao traduzir novamente.', 'error');
+            }
+        }
+
+        // ========================================
+        // FUNÇÃO: Tradução Completa (Forçada)
+        // ========================================
+        async function traduzirCompleta() {
+            const letra = document.getElementById('letraIngles').textContent;
+            if (!letra || letra === 'Carregando...') {
+                mostrarStatus('⚠️ Não há letra para traduzir!', 'error');
+                return;
+            }
+            
+            mostrarStatus('🔥 Traduzindo completamente...', 'info');
+            
+            const traducao = await traduzirComGeminiProForte(letra);
+            
+            if (traducao) {
+                document.getElementById('letraPortugues').textContent = traducao;
+                mostrarStatus('✅ Tradução completa realizada!', 'success');
+            } else {
+                mostrarStatus('❌ Erro na tradução completa.', 'error');
+            }
+        }
+
+        // ========================================
+        // FUNÇÃO: Copiar Tradução
+        // ========================================
+        function copiarTraducao() {
+            const traducao = document.getElementById('letraPortugues').textContent;
+            if (!traducao || traducao === 'Carregando...') {
+                mostrarStatus('⚠️ Não há tradução para copiar!', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(traducao).then(() => {
+                mostrarStatus('📋 Tradução copiada!', 'success');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = traducao;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                mostrarStatus('📋 Tradução copiada!', 'success');
+            });
+        }
+
+        // ========================================
+        // FUNÇÃO: Copiar Letra em Inglês
+        // ========================================
+        function copiarLetra() {
+            const letra = document.getElementById('letraIngles').textContent;
+            if (!letra || letra === 'Carregando...') {
+                mostrarStatus('⚠️ Não há letra para copiar!', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(letra).then(() => {
+                mostrarStatus('📋 Letra copiada!', 'success');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = letra;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                mostrarStatus('📋 Letra copiada!', 'success');
+            });
+        }
+
+        // ========================================
+        // FUNÇÃO: Mostrar Status
+        // ========================================
+        function mostrarStatus(mensagem, tipo) {
+            const status = document.getElementById('statusMsg');
+            status.textContent = mensagem;
+            status.className = 'status-msg ' + tipo;
+            status.style.display = 'block';
+        }
+
+        // ========================================
+        // FUNÇÃO: Gerar Frases Práticas
+        // ========================================
+        function gerarFrasesPraticas() {
+            const container = document.getElementById('frasesContainer');
+            
+            const frases = [
+                { en: "I love this song", pt: "Eu amo essa música" },
+                { en: "Can you help me?", pt: "Você pode me ajudar?" },
+                { en: "I want to learn English", pt: "Eu quero aprender inglês" },
+                { en: "This is amazing", pt: "Isso é incrível" },
+                { en: "Let's practice together", pt: "Vamos praticar juntos" },
+                { en: "Music is universal", pt: "A música é universal" },
+                { en: "I listen to music every day", pt: "Eu ouço música todos os dias" },
+                { en: "What's your favorite song?", pt: "Qual é a sua música favorita?" }
+            ];
+
+            container.innerHTML = frases.map(f => `
+                <div class="frase-item">
+                    <span class="en">${f.en}</span>
+                    <span style="color: rgba(255,255,255,0.2);">→</span>
+                    <span class="pt">${f.pt}</span>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn-audio" onclick="falarFrase('${f.en}')">🔊 Ouvir</button>
+                        <button class="btn-copiar" onclick="copiarFrase('${f.en} - ${f.pt}')">📋 Copiar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========================================
+        // FUNÇÃO: Falar Frase
+        // ========================================
+        function falarFrase(frase) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(frase);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                speechSynthesis.speak(utterance);
+            } else {
+                alert('Seu navegador não suporta áudio.');
+            }
+        }
+
+        // ========================================
+        // FUNÇÃO: Copiar Frase
+        // ========================================
+        function copiarFrase(frase) {
+            navigator.clipboard.writeText(frase).then(() => {
+                mostrarStatus('📋 Frase copiada!', 'success');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = frase;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                mostrarStatus('📋 Frase copiada!', 'success');
+            });
+        }
+    </script>
+    <script src="js/calculadora.js"></script>
+    <script src="js/caderno.js"></script>
+    <script src="js/pomodoro.js"></script>
+    <script src="js/dicionario-flutuante.js"></script>
+    <script src="js/tarefas.js"></script>
+    <script src="js/retro-fx.js"></script>
+</body>
+</html>

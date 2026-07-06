@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Nexus Study</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="js/seed-dados.js"></script>
+    <script src="js/conteudo-render.js"></script>
+</head>
+<body>
+    <!-- ======================================== -->
+    <!-- HEADER ADMIN                             -->
+    <!-- ======================================== -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo">
+                <h1><a href="admin.html" title="Voltar ao início do painel">👑 NEXUS ADMIN</a></h1>
+                <span class="admin-badge">Painel de Controle</span>
+            </div>
+            <div class="user-info">
+                <span id="adminName">👤 Admin</span>
+                <button onclick="voltarSite()" class="btn-voltar-site">🌐 Ver Site</button>
+                <button onclick="logoutAdmin()" class="btn-logout-admin">⏻ Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================================== -->
+    <!-- MAIN ADMIN                               -->
+    <!-- ======================================== -->
+    <main class="admin-main">
+        <!-- Stats -->
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <span class="stat-icon">📚</span>
+                <span class="stat-number" id="totalTrilhasAdmin">0</span>
+                <span class="stat-label">Total de Trilhas</span>
+            </div>
+            <div class="admin-stat-card">
+                <span class="stat-icon">📝</span>
+                <span class="stat-number" id="totalEstudosAdmin">0</span>
+                <span class="stat-label">Total de Estudos</span>
+            </div>
+            <div class="admin-stat-card">
+                <span class="stat-icon">👥</span>
+                <span class="stat-number" id="totalUsuariosAdmin">0</span>
+                <span class="stat-label">Total de Usuários</span>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="trilhas">📚 Trilhas</button>
+            <button class="admin-tab" data-tab="criar">✨ Criar Trilha</button>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- TAB: TRILHAS                            -->
+        <!-- ======================================== -->
+        <div id="tab-trilhas" class="admin-content active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="color: #fff; font-size: 20px;">📚 Todas as Trilhas</h2>
+                <button onclick="abrirTabCriar()" class="btn-criar">✦ Nova Trilha</button>
+            </div>
+
+            <!-- Exportar Dados -->
+            <div style="background: rgba(255,255,255,0.02); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.04);">
+                <h4 style="color: #fff; font-size: 15px; margin-bottom: 10px;">📤 Exportar Dados</h4>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="exportarCSV()" style="padding: 8px 20px; background: rgba(0,245,212,0.08); color: #00f5d4; border: 1px solid rgba(0,245,212,0.06); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Inter', sans-serif;">
+                        📊 Exportar CSV
+                    </button>
+                    <button onclick="exportarJSON()" style="padding: 8px 20px; background: rgba(58,134,255,0.08); color: #3a86ff; border: 1px solid rgba(58,134,255,0.06); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Inter', sans-serif;">
+                        📦 Exportar JSON
+                    </button>
+                    <button onclick="exportarProgresso()" style="padding: 8px 20px; background: rgba(255,200,0,0.08); color: #ffd700; border: 1px solid rgba(255,200,0,0.06); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Inter', sans-serif;">
+                        📈 Relatório
+                    </button>
+                    <button onclick="importarDados()" style="padding: 8px 20px; background: rgba(131,56,236,0.08); color: #8338ec; border: 1px solid rgba(131,56,236,0.06); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Inter', sans-serif;">
+                        📥 Importar
+                    </button>
+                </div>
+            </div>
+
+            <div id="adminTrilhasContainer">
+                <!-- Trilhas serão carregadas aqui -->
+            </div>
+        </div>
+
+        <!-- ======================================== -->
+        <!-- TAB: CRIAR TRILHA                       -->
+        <!-- ======================================== -->
+        <div id="tab-criar" class="admin-content">
+            <h2 style="color: #fff; margin-bottom: 15px; font-size: 20px;">✨ Criar Nova Trilha</h2>
+            <form id="adminCriarTrilhaForm" style="background: rgba(255,255,255,0.02); padding: 25px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.04);">
+                <div class="input-group">
+                    <label>🎯 Título da Trilha</label>
+                    <input type="text" id="adminTrilhaTitulo" placeholder="Ex: Foco Total na Prova da ETEC" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>📝 Descrição</label>
+                    <textarea id="adminTrilhaDescricao" rows="3" placeholder="Descreva o objetivo desta trilha..." required></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>🎯 Nível</label>
+                    <select id="adminTrilhaNivel">
+                        <option value="Iniciante">🌱 Iniciante</option>
+                        <option value="Intermediário" selected>⚡ Intermediário</option>
+                        <option value="Avançado">🔥 Avançado</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>🏷️ Tags (separadas por vírgula)</label>
+                    <input type="text" id="adminTrilhaTags" placeholder="Ex: ETEC, vestibulinho, matemática">
+                </div>
+                
+                <div class="input-group">
+                    <label>🎨 Ícone</label>
+                    <input type="text" id="adminTrilhaIcone" placeholder="Ex: 🎯, 📚, 🚀" value="📚">
+                </div>
+                
+                <div class="input-group">
+                    <label>⏱️ Duração Estimada</label>
+                    <input type="text" id="adminTrilhaDuracao" placeholder="Ex: 8 semanas" value="8 semanas">
+                </div>
+                
+                <button type="submit" class="btn-salvar-admin">✦ Criar Trilha</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- ======================================== -->
+    <!-- MODAL: ADICIONAR ESTUDO (COMPLETO)      -->
+    <!-- ======================================== -->
+    <div id="modalAddEstudo" class="modal-admin">
+        <div class="modal-admin-content">
+            <span class="close" onclick="fecharModalAddEstudo()">✕</span>
+            <h2 id="modalAddEstudoTitulo">📚 Adicionar Estudo</h2>
+            <form id="adminAddEstudoForm">
+                <input type="hidden" id="adminTrilhaId">
+                
+                <!-- Dados Básicos -->
+                <div class="input-group">
+                    <label>📌 Título do Estudo</label>
+                    <input type="text" id="adminEstudoTitulo" placeholder="Ex: Matemática - Operações Básicas" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>📝 Descrição</label>
+                    <textarea id="adminEstudoDescricao" rows="2" placeholder="Descreva o conteúdo..." required></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>📚 Módulo</label>
+                    <input type="text" id="adminEstudoModulo" placeholder="Ex: Módulo 1: Matemática Básica">
+                </div>
+                
+                <div class="input-group">
+                    <label>🔢 Ordem</label>
+                    <input type="number" id="adminEstudoOrdem" placeholder="1" value="1" min="1">
+                </div>
+
+                <div class="input-group input-group-checkbox">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="adminEstudoPublicado" checked>
+                        🚀 Publicado (visível para os alunos)
+                    </label>
+                    <span class="checkbox-hint">Desmarque para salvar como rascunho, sem mostrar aos alunos ainda.</span>
+                </div>
+
+                <!-- ======================================== -->
+                <!-- EDITOR DE CONTEÚDO MELHORADO           -->
+                <!-- ======================================== -->
+                <div class="editor-container">
+                    <!-- Barra de Ferramentas -->
+                    <div class="editor-toolbar">
+                        <button type="button" onclick="inserirFormatacao('negrito')" class="btn-editor">
+                            <strong>B</strong>
+                        </button>
+                        <button type="button" onclick="inserirFormatacao('italico')" class="btn-editor">
+                            <em>I</em>
+                        </button>
+                        <button type="button" onclick="inserirFormatacao('sublinhado')" class="btn-editor">
+                            <u>U</u>
+                        </button>
+
+                        <div class="editor-divisor"></div>
+
+                        <button type="button" onclick="inserirTag('titulo')" class="btn-editor btn-editor-texto">
+                            Título
+                        </button>
+                        <button type="button" onclick="inserirTag('subtitulo')" class="btn-editor btn-editor-imagem">
+                            Subtítulo
+                        </button>
+
+                        <div class="editor-divisor"></div>
+
+                        <button type="button" onclick="inserirFormatacao('lista')" class="btn-editor">
+                            📋 Lista
+                        </button>
+                        <button type="button" onclick="inserirFormatacao('listaNumerada')" class="btn-editor">
+                            1️⃣ Lista
+                        </button>
+
+                        <div class="editor-divisor"></div>
+
+                        <button type="button" onclick="inserirTag('video')" class="btn-editor btn-editor-video">
+                            🎬 Vídeo
+                        </button>
+                        <button type="button" onclick="inserirTag('imagem')" class="btn-editor btn-editor-imagem">
+                            🖼️ Imagem
+                        </button>
+                        <button type="button" onclick="inserirTag('link')" class="btn-editor btn-editor-dica">
+                            🔗 Link
+                        </button>
+
+                        <div class="editor-divisor"></div>
+
+                        <button type="button" onclick="inserirTag('exercicio')" class="btn-editor btn-editor-exercicio">
+                            📝 Exercício
+                        </button>
+                        <button type="button" onclick="inserirTag('dica')" class="btn-editor btn-editor-dica">
+                            💡 Dica
+                        </button>
+                        <button type="button" onclick="inserirTag('tabela')" class="btn-editor btn-editor-tabela">
+                            📊 Tabela
+                        </button>
+
+                        <div class="editor-divisor"></div>
+
+                        <button type="button" onclick="inserirTag('quiz')" class="btn-editor btn-editor-quiz">
+                            ❓ Quiz
+                        </button>
+                        <button type="button" onclick="inserirTag('flashcard')" class="btn-editor btn-editor-flashcard">
+                            🎴 Flashcard
+                        </button>
+                        <button type="button" onclick="inserirTag('codigo')" class="btn-editor btn-editor-codigo">
+                            💻 Código
+                        </button>
+                        <button type="button" onclick="inserirTag('audio')" class="btn-editor btn-editor-audio">
+                            🔊 Áudio
+                        </button>
+                        <button type="button" onclick="inserirTag('colapsavel')" class="btn-editor btn-editor-colapsavel">
+                            📂 Colapsável
+                        </button>
+                        <button type="button" onclick="inserirTag('exemplo')" class="btn-editor btn-editor-exemplo">
+                            🗨️ Exemplo
+                        </button>
+                    </div>
+
+                    <!-- Abas -->
+                    <div class="editor-abas">
+                        <button type="button" onclick="trocarAbaEditor('escrever')" id="abaEscrever" class="aba-editor" style="color: #3a86ff; border-bottom-color: #3a86ff;">
+                            ✏️ Escrever
+                        </button>
+                        <button type="button" onclick="trocarAbaEditor('preview')" id="abaPreview" class="aba-editor">
+                            👁️ Prévia
+                        </button>
+                        <button type="button" onclick="trocarAbaEditor('split')" id="abaSplit" class="aba-editor">
+                            📐 Dividido
+                        </button>
+                    </div>
+
+                    <!-- Aba Escrever -->
+                    <div id="conteudoEscrever" class="editor-conteudo-tab">
+                        <textarea id="adminEstudoConteudo" rows="10" placeholder="Digite o conteúdo do estudo... use os botões acima para adicionar elementos formatados" class="editor-textarea" oninput="atualizarPreview()"></textarea>
+                    </div>
+
+                    <!-- Aba Prévia -->
+                    <div id="conteudoPreview" class="editor-conteudo-tab" style="display: none;">
+                        <div id="previewContent" class="editor-preview-box">
+                            <p class="editor-preview-placeholder">Digite algo para ver a prévia aqui 👆</p>
+                        </div>
+                    </div>
+
+                    <!-- Aba Dividido -->
+                    <div id="conteudoSplit" class="editor-conteudo-tab" style="display: none;">
+                        <div class="editor-split-grid">
+                            <div>
+                                <label class="editor-split-label">✏️ Editor</label>
+                                <textarea id="adminEstudoConteudoSplit" rows="10" placeholder="Digite o conteúdo..." class="editor-textarea" oninput="atualizarPreviewSplit()"></textarea>
+                            </div>
+                            <div>
+                                <label class="editor-split-label">👁️ Prévia</label>
+                                <div id="previewContentSplit" class="editor-preview-box">
+                                    <p class="editor-preview-placeholder">Digite algo para ver a prévia aqui 👆</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ======================================== -->
+                <!-- VÍDEO (LINK DO YOUTUBE OU GOOGLE DRIVE)  -->
+                <!-- ======================================== -->
+                <div class="upload-container">
+                    <label>🎬 Vídeo (link do YouTube ou Google Drive)</label>
+                    <div class="upload-area">
+                        <input type="url" id="adminEstudoVideo" placeholder="Cole aqui o link do vídeo (YouTube ou Google Drive)">
+                        <button type="button" onclick="uploadVideo()" class="btn-upload">➕ Inserir Vídeo</button>
+                    </div>
+                    <div id="videoStatus" class="upload-status">Nenhum vídeo adicionado</div>
+                </div>
+
+                <!-- ======================================== -->
+                <!-- IMAGEM (LINK EXTERNO)                    -->
+                <!-- ======================================== -->
+                <div class="upload-container">
+                    <label>🖼️ Imagem (link externo)</label>
+                    <div class="upload-area">
+                        <input type="url" id="adminEstudoImagem" placeholder="Cole aqui o link da imagem (https://...)">
+                        <button type="button" onclick="uploadImagem()" class="btn-upload-imagem">➕ Inserir Imagem</button>
+                    </div>
+                    <div id="imagemStatus" class="upload-status">Nenhuma imagem adicionada</div>
+                </div>
+                
+                <button type="submit" class="btn-salvar-admin" id="btnSalvarEstudo">✦ Salvar Estudo</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- MODAL: EDITAR TRILHA                    -->
+    <!-- ======================================== -->
+    <div id="modalEditarTrilha" class="modal-admin">
+        <div class="modal-admin-content">
+            <span class="close" onclick="fecharModalEditarTrilha()">✕</span>
+            <h2>✏️ Editar Trilha</h2>
+            <form id="adminEditarTrilhaForm">
+                <input type="hidden" id="editTrilhaId">
+                
+                <div class="input-group">
+                    <label>🎯 Título</label>
+                    <input type="text" id="editTrilhaTitulo" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>📝 Descrição</label>
+                    <textarea id="editTrilhaDescricao" rows="3" required></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>🎯 Nível</label>
+                    <select id="editTrilhaNivel">
+                        <option value="Iniciante">🌱 Iniciante</option>
+                        <option value="Intermediário">⚡ Intermediário</option>
+                        <option value="Avançado">🔥 Avançado</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>🏷️ Tags</label>
+                    <input type="text" id="editTrilhaTags" placeholder="Ex: ETEC, matemática">
+                </div>
+                
+                <div class="input-group">
+                    <label>🎨 Ícone</label>
+                    <input type="text" id="editTrilhaIcone">
+                </div>
+                
+                <div class="input-group">
+                    <label>⏱️ Duração</label>
+                    <input type="text" id="editTrilhaDuracao">
+                </div>
+                
+                <button type="submit" class="btn-salvar-admin">✦ Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script src="js/retro-fx.js"></script>
+</body>
+</html>

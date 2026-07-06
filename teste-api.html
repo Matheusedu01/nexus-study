@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste de APIs</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+    <h1>Teste da API Gemini</h1>
+    <button onclick="testarAPI()">Testar API</button>
+    <pre id="resultado"></pre>
+
+    <h1>Teste da API DeepL</h1>
+    <button onclick="testarDeepL()">Testar DeepL</button>
+    <pre id="resultadoDeepL"></pre>
+
+    <script src="js/config.js"></script>
+    <script>
+        async function testarDeepL() {
+            const resultado = document.getElementById('resultadoDeepL');
+
+            if (!deeplConfigurado()) {
+                resultado.textContent = '❌ ERRO: Configure DEEPL_PROXY_URL no arquivo js/config.js (veja cloudflare-worker/deepl-proxy.js)';
+                return;
+            }
+
+            resultado.textContent = '⏳ Testando o proxy do DeepL (' + DEEPL_PROXY_URL + ')...';
+
+            const traducao = await traduzirComDeepL('Hello, world!');
+            if (traducao) {
+                resultado.textContent = '✅ DEEPL FUNCIONANDO!\n\nTradução de "Hello, world!": ' + traducao;
+            } else {
+                resultado.textContent = '❌ ERRO: a chamada ao DeepL falhou ou não retornou tradução. Veja o console (F12) para detalhes do erro.';
+            }
+        }
+
+        async function testarAPI() {
+            const resultado = document.getElementById('resultado');
+            
+            if (!GEMINI_API_KEY || GEMINI_API_KEY === 'SUA_CHAVE_AQUI') {
+                resultado.textContent = '❌ ERRO: Configure sua chave API no arquivo js/config.js';
+                return;
+            }
+            
+            resultado.textContent = '⏳ Testando API...';
+            
+            try {
+                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: 'Diga "Olá, mundo!" em português' }]
+                        }]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0]) {
+                    resultado.textContent = '✅ API FUNCIONANDO!\n\nResposta: ' + data.candidates[0].content.parts[0].text;
+                } else if (data.error) {
+                    resultado.textContent = '❌ ERRO DA API:\n' + JSON.stringify(data.error, null, 2);
+                } else {
+                    resultado.textContent = '❌ RESPOSTA INESPERADA:\n' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                resultado.textContent = '❌ ERRO: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

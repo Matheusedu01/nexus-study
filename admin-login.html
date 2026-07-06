@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Nexus Study</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff006e, #ff4444);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .login-box {
+            border-color: rgba(255, 0, 110, 0.3);
+        }
+
+        .login-box::before {
+            background: linear-gradient(45deg, 
+                #ff006e, 
+                #ff4444, 
+                #ff006e
+            ) !important;
+            opacity: 0.8 !important;
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #ff006e, #ff4444) !important;
+        }
+
+        .btn-admin:hover {
+            box-shadow: 0 10px 40px rgba(255, 0, 110, 0.4) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo-container">
+                <div class="logo-icon">👑</div>
+                <h1>NEXUS ADMIN</h1>
+                <p class="subtitle">✦ Painel de Controle ✦</p>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 25px;">
+                <span class="admin-badge">🔒 Área Restrita</span>
+            </div>
+            
+            <h2 id="formTitle">🔐 Acesso Administrativo</h2>
+
+            <form id="adminLoginForm">
+                <div class="input-group">
+                    <label>👑 Usuário Admin</label>
+                    <input type="text" id="adminUser" placeholder="admin" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>🔒 Senha</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-login btn-admin">
+                    <span class="status-dot"></span> Entrar como Admin
+                </button>
+                
+                <p class="register-link" style="margin-top: 15px;">
+                    <a href="index.html" style="color: rgba(255,255,255,0.3);">← Voltar para o site</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Credenciais do Admin (você pode mudar)
+        const ADMIN_CREDENTIALS = {
+            user: 'admin',
+            password: 'admin123'
+        };
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const user = document.getElementById('adminUser').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (user === ADMIN_CREDENTIALS.user && password === ADMIN_CREDENTIALS.password) {
+                localStorage.setItem('isAdmin', 'true');
+                window.location.href = 'admin.html';
+            } else {
+                alert('❌ Usuário ou senha incorretos!');
+            }
+        });
+
+        // Partículas
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 20) + 's';
+                particle.style.background = `rgba(255, 0, 110, ${0.1 + Math.random() * 0.3})`;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+    </script>
+</body>
+</html>
