@@ -6,7 +6,7 @@ if (!user) {
     window.location.href = 'index.html';
 }
 
-document.getElementById('userName').textContent = `👤 ${user.name}`;
+// Nome + avatar do cabeçalho (#userName) são preenchidos por js/user-header.js
 
 // carregarTrilhasDoStorage() vem de js/utils.js
 

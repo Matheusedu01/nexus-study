@@ -347,7 +347,7 @@
         if (!user) {
             window.location.href = 'index.html';
         }
-        document.getElementById('userName').textContent = `👤 ${user.name}`;
+        // Nome + avatar do cabeçalho (#userName) são preenchidos por js/user-header.js
 
         // carregarTrilhasDoStorage() vem de js/utils.js
         // CONQUISTAS, calcularDadosConquistas() e calcularSequenciaConquistas()
@@ -420,6 +420,8 @@
         verificarNovasConquistas(user.email, carregarTrilhasDoStorage());
         renderizarConquistas();
     </script>
+    <script src="js/avatar-pixel.js"></script>
+    <script src="js/user-header.js"></script>
     <script src="js/calculadora.js"></script>
     <script src="js/caderno.js"></script>
     <script src="js/pomodoro.js"></script>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Nexus Study</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="js/seed-dados.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/conquistas.js"></script>
+    <style>
+        .perfil-grid {
+            display: grid;
+            grid-template-columns: minmax(280px, 340px) 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        @media (max-width: 800px) {
+            .perfil-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .perfil-card {
+            background: #101018;
+            border: var(--pixel-border) solid #23233a;
+            box-shadow: var(--pixel-shadow) var(--pixel-shadow) 0 var(--pixel-ink);
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .perfil-card h2 {
+            font-family: var(--pixel-font);
+            font-size: 13px;
+            color: #3a86ff;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .avatar-preview-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #14141f;
+            border: var(--pixel-border) solid #23233a;
+            padding: 20px 0;
+            margin-bottom: 18px;
+        }
+
+        .avatar-preview-box svg {
+            image-rendering: pixelated;
+        }
+
+        .avatar-opcao-grupo {
+            margin-bottom: 16px;
+        }
+
+        .avatar-opcao-titulo {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .avatar-swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .avatar-swatch-cor {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #23233a;
+            cursor: pointer;
+            padding: 0;
+            transition: transform 0.1s ease;
+        }
+
+        .avatar-swatch-cor:hover {
+            transform: translate(-1px, -1px);
+        }
+
+        .avatar-swatch-cor.selecionado {
+            border-color: #00f5d4;
+            box-shadow: 2px 2px 0 #05050a;
+        }
+
+        .avatar-swatch-opcao {
+            padding: 8px 12px;
+            background: #14141f;
+            color: rgba(255, 255, 255, 0.7);
+            border: 2px solid #23233a;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.1s ease;
+        }
+
+        .avatar-swatch-opcao:hover {
+            transform: translate(-1px, -1px);
+            background: #1c1c2b;
+        }
+
+        .avatar-swatch-opcao.selecionado {
+            border-color: #3a86ff;
+            color: #3a86ff;
+            background: rgba(58, 134, 255, 0.1);
+        }
+
+        .perfil-frase-input {
+            width: 100%;
+            padding: 12px;
+            background: #05050a;
+            border: 2px solid #23233a;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            resize: none;
+            min-height: 70px;
+        }
+
+        .perfil-frase-contador {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: right;
+            margin-top: 6px;
+        }
+
+        .perfil-status {
+            font-size: 12px;
+            color: #00f5d4;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .perfil-status.visivel {
+            opacity: 1;
+        }
+
+        .estudo-atual-item {
+            border: 2px solid #23233a;
+            padding: 14px;
+            margin-bottom: 12px;
+            background: #14141f;
+        }
+
+        .estudo-atual-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .estudo-atual-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .estudo-atual-nome {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .estudo-atual-pct {
+            font-family: var(--pixel-font);
+            font-size: 11px;
+            color: #00f5d4;
+        }
+
+        .estudo-atual-barra {
+            width: 100%;
+            height: 10px;
+            background: #05050a;
+            border: 2px solid #23233a;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .estudo-atual-barra-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3a86ff, #00f5d4);
+        }
+
+        .estudo-atual-titulo {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .perfil-vazio {
+            text-align: center;
+            padding: 25px 10px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+        }
+
+        .perfil-vazio a {
+            color: #3a86ff;
+        }
+
+        .conquistas-resumo-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .conquistas-resumo-contador {
+            font-family: var(--pixel-font);
+            font-size: 11px;
+            color: #ffd700;
+        }
+
+        .conquistas-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+            gap: 10px;
+        }
+
+        .conquista-mini {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+            font-size: 22px;
+            background: #14141f;
+            border: 2px solid #23233a;
+        }
+
+        .conquista-mini.desbloqueada {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.08);
+        }
+
+        .conquista-mini.bloqueada {
+            filter: grayscale(1);
+            opacity: 0.3;
+        }
+
+        .link-ver-todas {
+            display: inline-block;
+            margin-top: 14px;
+            font-size: 12px;
+            color: #3a86ff;
+        }
+
+        body.light-theme .perfil-card,
+        body.light-theme .avatar-preview-box,
+        body.light-theme .estudo-atual-item,
+        body.light-theme .conquista-mini {
+            background: #fff;
+            border-color: #d5d8e0;
+        }
+
+        body.light-theme .perfil-card h2 {
+            color: #2456c9;
+        }
+
+        body.light-theme .avatar-swatch-opcao {
+            background: #f0f2f5;
+            color: rgba(0, 0, 0, 0.6);
+            border-color: #d5d8e0;
+        }
+
+        body.light-theme .perfil-frase-input {
+            background: #f7f8fa;
+            color: #1a1a2e;
+            border-color: #d5d8e0;
+        }
+
+        body.light-theme .estudo-atual-barra {
+            background: #e2e5ec;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><a href="dashboard.html" title="Voltar ao início">⚡ NEXUS STUDY</a></h1>
+            <div class="user-info">
+                <span id="userName">👤 Usuário</span>
+                <a href="conquistas.html" class="btn-conquistas">🏆 Conquistas</a>
+                <a href="tradutor-musica.html" class="btn-tradutor">🎵 Tradutor</a>
+                <button onclick="toggleTheme()" class="btn-theme">🌙 Tema</button>
+                <button onclick="logout()" class="btn-logout">⏻ Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero-section">
+            <h1>👤 Meu Perfil</h1>
+            <p>Monte seu avatar, escreva sua frase e acompanhe seu progresso.</p>
+        </div>
+
+        <div class="perfil-grid">
+            <div>
+                <div class="perfil-card">
+                    <h2>🎨 MEU AVATAR</h2>
+                    <div class="avatar-preview-box">
+                        <div id="avatarPreview"></div>
+                    </div>
+                    <div id="avatarEditor"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="perfil-card">
+                    <h2>💬 MINHA FRASE</h2>
+                    <textarea id="perfilFrase" class="perfil-frase-input" maxlength="120" placeholder="Escreva uma frase, meta ou motivação..."></textarea>
+                    <div class="perfil-frase-contador"><span id="fraseContador">0</span>/120</div>
+                    <div id="fraseStatus" class="perfil-status">✅ Frase salva!</div>
+                </div>
+
+                <div class="perfil-card">
+                    <h2>📖 ESTUDANDO AGORA</h2>
+                    <div id="estudandoAgora"></div>
+                </div>
+
+                <div class="perfil-card">
+                    <h2>🏆 CONQUISTAS</h2>
+                    <div class="conquistas-resumo-topo">
+                        <span class="conquistas-resumo-contador" id="conquistasContador">0/0</span>
+                    </div>
+                    <div class="conquistas-mini-grid" id="conquistasMiniGrid"></div>
+                    <a href="conquistas.html" class="link-ver-todas">Ver todas as conquistas →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/avatar-pixel.js"></script>
+    <script src="js/user-header.js"></script>
+    <script>
+        // ========================================
+        // AUTENTICAÇÃO
+        // ========================================
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        loadTheme();
+
+        // ========================================
+        // AVATAR
+        // ========================================
+        let avatarConfig = obterAvatarUsuario(user.email);
+
+        function renderizarPreview() {
+            document.getElementById('avatarPreview').innerHTML = gerarAvatarSVG(avatarConfig, 140);
+        }
+
+        function renderizarEditorAvatar() {
+            const grupos = [
+                { chave: 'pele', titulo: 'Tom de pele', tipo: 'cor', opcoes: AVATAR_OPCOES.peles },
+                { chave: 'cabelo', titulo: 'Cabelo', tipo: 'opcao', opcoes: AVATAR_OPCOES.cabelos },
+                { chave: 'corCabelo', titulo: 'Cor do cabelo', tipo: 'cor', opcoes: AVATAR_OPCOES.coresCabelo },
+                { chave: 'roupa', titulo: 'Roupa', tipo: 'opcao', opcoes: AVATAR_OPCOES.roupas },
+                { chave: 'corRoupa', titulo: 'Cor da roupa', tipo: 'cor', opcoes: AVATAR_OPCOES.coresRoupa },
+                { chave: 'acessorio', titulo: 'Acessório', tipo: 'opcao', opcoes: AVATAR_OPCOES.acessorios },
+            ];
+
+            document.getElementById('avatarEditor').innerHTML = grupos.map(grupo => {
+                const swatches = grupo.tipo === 'cor'
+                    ? grupo.opcoes.map(cor => `<button type="button" class="avatar-swatch-cor ${avatarConfig[grupo.chave] === cor ? 'selecionado' : ''}" style="background:${cor};" data-chave="${grupo.chave}" data-valor="${cor}" title="${cor}"></button>`).join('')
+                    : grupo.opcoes.map(op => `<button type="button" class="avatar-swatch-opcao ${avatarConfig[grupo.chave] === op.id ? 'selecionado' : ''}" data-chave="${grupo.chave}" data-valor="${op.id}">${op.nome}</button>`).join('');
+
+                return `
+                    <div class="avatar-opcao-grupo">
+                        <div class="avatar-opcao-titulo">${grupo.titulo}</div>
+                        <div class="avatar-swatches">${swatches}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.querySelectorAll('#avatarEditor [data-chave]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    avatarConfig[btn.dataset.chave] = btn.dataset.valor;
+                    salvarAvatarUsuario(user.email, avatarConfig);
+                    renderizarPreview();
+                    renderizarEditorAvatar();
+                    if (typeof atualizarAvatarCabecalho === 'function') atualizarAvatarCabecalho();
+                });
+            });
+        }
+
+        renderizarPreview();
+        renderizarEditorAvatar();
+
+        // ========================================
+        // FRASE / STATUS
+        // ========================================
+        const CHAVE_FRASE = `bio_${user.email}`;
+        const fraseInput = document.getElementById('perfilFrase');
+        const fraseContador = document.getElementById('fraseContador');
+        const fraseStatus = document.getElementById('fraseStatus');
+
+        fraseInput.value = localStorage.getItem(CHAVE_FRASE) || '';
+        fraseContador.textContent = fraseInput.value.length;
+
+        let timeoutFrase = null;
+        fraseInput.addEventListener('input', () => {
+            fraseContador.textContent = fraseInput.value.length;
+            clearTimeout(timeoutFrase);
+            timeoutFrase = setTimeout(() => {
+                localStorage.setItem(CHAVE_FRASE, fraseInput.value);
+                fraseStatus.classList.add('visivel');
+                setTimeout(() => fraseStatus.classList.remove('visivel'), 1500);
+            }, 500);
+        });
+
+        // ========================================
+        // ESTUDANDO AGORA
+        // ========================================
+        function escaparHtml(texto) {
+            const div = document.createElement('div');
+            div.textContent = texto == null ? '' : String(texto);
+            return div.innerHTML;
+        }
+
+        function renderizarEstudandoAgora() {
+            const trilhas = carregarTrilhasDoStorage();
+            const emAndamento = [];
+
+            trilhas.forEach((trilha, index) => {
+                const progressKey = `progress_${index}_${user.email}`;
+                const prog = JSON.parse(localStorage.getItem(progressKey) || 'null');
+                if (!prog) return;
+
+                const todosEstudos = (trilha.materias || []).flatMap(m => m.estudos || []);
+                const total = todosEstudos.length;
+                const concluidos = (prog.concluidos || []).filter(id => todosEstudos.some(e => e.id === id)).length;
+                if (total === 0) return;
+
+                const pct = Math.round((concluidos / total) * 100);
+                if (pct <= 0 || pct >= 100) return;
+
+                const estudoAtual = todosEstudos.find(e => e.id === prog.atual);
+
+                emAndamento.push({
+                    titulo: trilha.titulo,
+                    icone: trilha.icone || '📘',
+                    pct,
+                    estudoTitulo: estudoAtual ? estudoAtual.titulo : null,
+                });
+            });
+
+            const container = document.getElementById('estudandoAgora');
+            if (emAndamento.length === 0) {
+                container.innerHTML = `<div class="perfil-vazio">Nenhum estudo em andamento ainda.<br><a href="dashboard.html">Escolher uma trilha →</a></div>`;
+                return;
+            }
+
+            container.innerHTML = emAndamento.map(e => `
+                <div class="estudo-atual-item">
+                    <div class="estudo-atual-topo">
+                        <span class="estudo-atual-nome">${e.icone} ${escaparHtml(e.titulo)}</span>
+                        <span class="estudo-atual-pct">${e.pct}%</span>
+                    </div>
+                    <div class="estudo-atual-barra"><div class="estudo-atual-barra-fill" style="width:${e.pct}%;"></div></div>
+                    ${e.estudoTitulo ? `<div class="estudo-atual-titulo">📍 ${escaparHtml(e.estudoTitulo)}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        renderizarEstudandoAgora();
+
+        // ========================================
+        // CONQUISTAS (resumo)
+        // ========================================
+        function renderizarConquistasResumo() {
+            verificarNovasConquistas(user.email, carregarTrilhasDoStorage());
+            const desbloqueadas = JSON.parse(localStorage.getItem(`conquistas_${user.email}`) || '[]');
+            document.getElementById('conquistasContador').textContent = `${desbloqueadas.length}/${CONQUISTAS.length}`;
+
+            document.getElementById('conquistasMiniGrid').innerHTML = CONQUISTAS.map(c => {
+                const desbloqueada = desbloqueadas.includes(c.id);
+                return `<div class="conquista-mini ${desbloqueada ? 'desbloqueada' : 'bloqueada'}" title="${escaparHtml(c.nome)}${desbloqueada ? '' : ' (bloqueada)'}">${c.icone}</div>`;
+            }).join('');
+        }
+
+        renderizarConquistasResumo();
+    </script>
+    <script src="js/calculadora.js"></script>
+    <script src="js/caderno.js"></script>
+    <script src="js/pomodoro.js"></script>
+    <script src="js/dicionario-flutuante.js"></script>
+    <script src="js/tarefas.js"></script>
+    <script src="js/retro-fx.js"></script>
+    <script src="js/widgets-hub-mobile.js"></script>
+</body>
+</html>

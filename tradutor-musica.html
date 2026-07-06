@@ -674,7 +674,7 @@
         if (!user) {
             window.location.href = 'index.html';
         }
-        document.getElementById('userName').textContent = `👤 ${user.name}`;
+        // Nome + avatar do cabeçalho (#userName) são preenchidos por js/user-header.js
 
         // toggleTheme(), loadTheme() e logout() vêm de js/utils.js
         loadTheme();
@@ -986,6 +986,8 @@
             });
         }
     </script>
+    <script src="js/avatar-pixel.js"></script>
+    <script src="js/user-header.js"></script>
     <script src="js/calculadora.js"></script>
     <script src="js/caderno.js"></script>
     <script src="js/pomodoro.js"></script>
