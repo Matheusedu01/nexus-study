@@ -51,6 +51,34 @@
         .avatar-preview-box svg {
             image-rendering: pixelated;
             box-shadow: 3px 3px 0 var(--pixel-ink);
+            animation: avatarBalancar 3s ease-in-out infinite;
+        }
+
+        .avatar-preview-box .avatar-olho {
+            animation: avatarPiscar 4.5s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        .personagem-item:hover svg {
+            animation: avatarBalancar 0.6s ease-in-out;
+        }
+
+        @keyframes avatarBalancar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-1px) rotate(-2deg); }
+        }
+
+        @keyframes avatarPiscar {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.15); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .avatar-preview-box svg,
+            .avatar-preview-box .avatar-olho,
+            .personagem-item:hover svg {
+                animation: none;
+            }
         }
 
         .btn-escolher-personagem {

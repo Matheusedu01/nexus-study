@@ -48,6 +48,29 @@
 
             .user-header-avatar svg {
                 margin-top: 2px;
+                animation: avatarBalancar 3s ease-in-out infinite;
+            }
+
+            .user-header-avatar .avatar-olho {
+                animation: avatarPiscar 4.5s ease-in-out infinite;
+                transform-origin: center;
+            }
+
+            @keyframes avatarBalancar {
+                0%, 100% { transform: translateY(0) rotate(0deg); }
+                50% { transform: translateY(-1px) rotate(-2deg); }
+            }
+
+            @keyframes avatarPiscar {
+                0%, 90%, 100% { transform: scaleY(1); }
+                95% { transform: scaleY(0.15); }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .user-header-avatar svg,
+                .user-header-avatar .avatar-olho {
+                    animation: none;
+                }
             }
 
             body.light-theme .user-header-link {

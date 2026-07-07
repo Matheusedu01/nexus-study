@@ -34,8 +34,8 @@ function camadaCabeca(pele) {
 function camadaOlhos(corSobrancelha) {
     return `
         <rect x="8" y="8.5" width="3" height="0.8" fill="${corSobrancelha}"/><rect x="13" y="8.5" width="3" height="0.8" fill="${corSobrancelha}"/>
-        <rect x="8" y="10" width="2.2" height="2.2" fill="${INK}"/>
-        <rect x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/>
+        <rect class="avatar-olho" x="8" y="10" width="2.2" height="2.2" fill="${INK}"/>
+        <rect class="avatar-olho" x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/>
         <rect x="8.3" y="10.3" width="0.7" height="0.7" fill="#fff"/>
         <rect x="14.1" y="10.3" width="0.7" height="0.7" fill="#fff"/>
         <rect x="11.7" y="12.5" width="0.6" height="2" fill="#000" opacity="0.15"/>
@@ -244,7 +244,7 @@ const PERSONAGENS = [
                 camadaPescoco(pele),
                 camadaOrelhas(pele),
                 camadaCabeca(pele),
-                `<rect x="8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="8.3" y="10.3" width="0.7" height="0.7" fill="#fff"/><rect x="14.1" y="10.3" width="0.7" height="0.7" fill="#fff"/>`,
+                `<rect class="avatar-olho" x="8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect class="avatar-olho" x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="8.3" y="10.3" width="0.7" height="0.7" fill="#fff"/><rect x="14.1" y="10.3" width="0.7" height="0.7" fill="#fff"/>`,
                 `<rect x="6.5" y="12.3" width="11" height="4" fill="${INK}"/>`,
                 `<rect x="6" y="6.3" width="12" height="2" fill="${INK}"/><rect x="17.5" y="6.6" width="2.5" height="1.2" fill="${INK}"/>`,
             ];
@@ -304,7 +304,7 @@ const PERSONAGENS = [
                 `<rect x="10.5" y="16.8" width="3" height="2.7" fill="${pele}"/>`,
                 `<rect x="5" y="9.3" width="1.6" height="2.6" fill="${pele}"/><rect x="17.4" y="9.3" width="1.6" height="2.6" fill="${pele}"/>`,
                 `<rect x="6.5" y="2" width="11" height="13.5" fill="${pele}"/>`,
-                `<rect x="7.3" y="9" width="4" height="3.6" fill="${INK}"/><rect x="12.7" y="9" width="4" height="3.6" fill="${INK}"/>`,
+                `<rect class="avatar-olho" x="7.3" y="9" width="4" height="3.6" fill="${INK}"/><rect class="avatar-olho" x="12.7" y="9" width="4" height="3.6" fill="${INK}"/>`,
                 `<rect x="10.5" y="15" width="3" height="0.5" fill="#3d5a3d"/>`,
             ];
         },
@@ -378,7 +378,7 @@ const PERSONAGENS = [
                 `<rect x="1" y="13" width="22" height="10" fill="${branco}"/>`,
                 `<rect x="3" y="22.3" width="2" height="1.7" fill="${this.fundo}"/><rect x="8" y="22.8" width="2" height="1.2" fill="${this.fundo}"/><rect x="13" y="22.3" width="2" height="1.7" fill="${this.fundo}"/><rect x="18" y="22.8" width="2" height="1.2" fill="${this.fundo}"/>`,
                 `<rect x="6" y="3" width="12" height="10.5" fill="${branco}"/>`,
-                `<rect x="8.2" y="9.3" width="1.9" height="2.6" fill="${INK}"/><rect x="13.9" y="9.3" width="1.9" height="2.6" fill="${INK}"/>`,
+                `<rect class="avatar-olho" x="8.2" y="9.3" width="1.9" height="2.6" fill="${INK}"/><rect class="avatar-olho" x="13.9" y="9.3" width="1.9" height="2.6" fill="${INK}"/>`,
                 `<rect x="10.6" y="12.6" width="2.8" height="1.8" fill="${INK}"/>`,
             ];
         },
@@ -514,7 +514,7 @@ const PERSONAGENS = [
                 camadaOrelhas(pele),
                 camadaCabeca(pele),
                 `<rect x="8" y="8.5" width="3" height="0.8" fill="#1c1c1c"/><rect x="13" y="8.5" width="3" height="0.8" fill="#1c1c1c"/>`,
-                `<rect x="8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="8.3" y="10.3" width="0.7" height="0.7" fill="#fff"/><rect x="14.1" y="10.3" width="0.7" height="0.7" fill="#fff"/>`,
+                `<rect class="avatar-olho" x="8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect class="avatar-olho" x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="8.3" y="10.3" width="0.7" height="0.7" fill="#fff"/><rect x="14.1" y="10.3" width="0.7" height="0.7" fill="#fff"/>`,
                 `<rect x="8.5" y="15" width="7" height="1.6" fill="#d00000"/>`,
                 `<rect x="10.9" y="12.2" width="2.2" height="2.2" fill="#d00000"/>`,
                 `<rect x="6" y="1" width="3" height="2.6" fill="#06d6a0"/><rect x="9.3" y="0.4" width="3" height="3.2" fill="#ffd60a"/><rect x="13" y="0.6" width="3" height="2.9" fill="#00b4d8"/><rect x="16" y="1.2" width="2.3" height="2.3" fill="#06d6a0"/>`,
