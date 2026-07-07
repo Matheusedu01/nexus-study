@@ -560,6 +560,114 @@ const PERSONAGENS = [
             ];
         },
     },
+    {
+        id: 'princesa',
+        nome: 'Princesa',
+        fundo: '#ffafcc',
+        camadas() {
+            const pele = '#ffdbac';
+            const corCabelo = '#8a5a2b';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#cdb4db'),
+                `<rect x="1" y="19" width="22" height="1" fill="#fff"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos(corCabelo),
+                camadaBoca('#c9184a'),
+                `<rect x="6" y="2" width="12" height="2" fill="${corCabelo}"/><rect x="3.3" y="2.5" width="3" height="3" fill="${corCabelo}"/><rect x="17.7" y="2.5" width="3" height="3" fill="${corCabelo}"/>`,
+                `<rect x="7" y="1.5" width="10" height="1" fill="#ffd700"/><rect x="10.8" y="1.1" width="1.4" height="1" fill="#e63946"/>`,
+            ];
+        },
+    },
+    {
+        id: 'fada',
+        nome: 'Fada',
+        fundo: '#e0aaff',
+        camadas() {
+            const pele = '#f1c27d';
+            const corCabelo = '#c77dff';
+            return [
+                camadaFundo(this.fundo),
+                `<rect x="0" y="13" width="3" height="5" fill="#caffbf" opacity="0.75"/><rect x="0" y="17.5" width="2.3" height="4" fill="#caffbf" opacity="0.55"/>`,
+                `<rect x="21" y="13" width="3" height="5" fill="#caffbf" opacity="0.75"/><rect x="21.7" y="17.5" width="2.3" height="4" fill="#caffbf" opacity="0.55"/>`,
+                camadaOmbros('#9d4edd'),
+                camadaPescoco(pele),
+                `<rect x="4.5" y="3" width="2" height="13" fill="${corCabelo}"/><rect x="17.5" y="3" width="2" height="13" fill="${corCabelo}"/>`,
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#8a5a2b'),
+                camadaBoca('#c9184a'),
+                `<rect x="6" y="2" width="12" height="2" fill="${corCabelo}"/>`,
+                `<rect x="7" y="1.3" width="1.4" height="1.4" fill="#ff70a6"/><rect x="10.5" y="0.9" width="1.4" height="1.4" fill="#ffd60a"/><rect x="14" y="1.3" width="1.4" height="1.4" fill="#ff70a6"/><rect x="6" y="1.9" width="12" height="0.6" fill="#06d6a0"/>`,
+            ];
+        },
+    },
+    {
+        id: 'sereia',
+        nome: 'Sereia',
+        fundo: '#023e8a',
+        camadas() {
+            const pele = '#ffdbac';
+            const corCabelo = '#48cae4';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#0077b6'),
+                `<rect x="2" y="19.5" width="2" height="1.6" fill="#48cae4"/><rect x="6" y="20" width="2" height="1.6" fill="#48cae4"/><rect x="16" y="20" width="2" height="1.6" fill="#48cae4"/><rect x="20" y="19.5" width="2" height="1.6" fill="#48cae4"/>`,
+                camadaPescoco(pele),
+                `<rect x="4" y="3" width="2.3" height="15" fill="${corCabelo}"/><rect x="17.7" y="3" width="2.3" height="15" fill="${corCabelo}"/>`,
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#0077b6'),
+                camadaBoca('#c9184a'),
+                `<rect x="6" y="2" width="12" height="2" fill="${corCabelo}"/>`,
+                `<rect x="14.5" y="1.8" width="1.6" height="1.4" fill="#ff70a6"/>`,
+            ];
+        },
+    },
+    {
+        id: 'bailarina',
+        nome: 'Bailarina',
+        fundo: '#ffc8dd',
+        camadas() {
+            const pele = '#f1c27d';
+            const corCabelo = '#5c3a1e';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#fff'),
+                `<rect x="1" y="19" width="22" height="1.6" fill="#ffafcc"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos(corCabelo),
+                camadaBoca('#c9184a'),
+                `<rect x="7" y="2" width="10" height="2.5" fill="${corCabelo}"/>`,
+                `<rect x="10" y="-0.6" width="4" height="3" fill="${corCabelo}"/><rect x="13.6" y="-1" width="1.6" height="1.6" fill="#ff70a6"/>`,
+            ];
+        },
+    },
+    {
+        id: 'popstar',
+        nome: 'Popstar',
+        fundo: '#ff006e',
+        camadas() {
+            const pele = '#e0ac69';
+            const corCabelo = '#ffbe0b';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#7209b7'),
+                `<rect x="5" y="12" width="1" height="1" fill="#ffd700"/><rect x="18" y="12" width="1" height="1" fill="#ffd700"/>`,
+                camadaPescoco(pele),
+                `<rect x="3.5" y="1.5" width="17" height="13" fill="${corCabelo}"/>`,
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaBoca('#c9184a'),
+                `<rect x="7.3" y="9.7" width="3.4" height="2.6" fill="${INK}"/><rect x="13.3" y="9.7" width="3.4" height="2.6" fill="${INK}"/><rect x="10.7" y="10.6" width="2.6" height="0.4" fill="${INK}"/>`,
+                `<rect x="6" y="1" width="12" height="2.5" fill="${corCabelo}"/>`,
+            ];
+        },
+    },
 ];
 
 function obterPersonagemUsuario(email) {

@@ -53,6 +53,96 @@
             box-shadow: 3px 3px 0 var(--pixel-ink);
         }
 
+        .btn-escolher-personagem {
+            width: 100%;
+            padding: 10px;
+            background: #3a86ff;
+            color: #fff;
+            border: var(--pixel-border) solid #05050a;
+            box-shadow: 3px 3px 0 #05050a;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .btn-escolher-personagem:hover {
+            background: #518eff;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 #05050a;
+        }
+
+        .btn-escolher-personagem:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #05050a;
+        }
+
+        .personagem-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .personagem-modal-overlay.aberto {
+            display: flex;
+        }
+
+        .personagem-modal {
+            background: #101018;
+            border: var(--pixel-border) solid #23233a;
+            box-shadow: var(--pixel-shadow) var(--pixel-shadow) 0 var(--pixel-ink);
+            width: 100%;
+            max-width: 620px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .personagem-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 2px solid #23233a;
+            font-family: var(--pixel-font);
+            font-size: 11px;
+            color: #3a86ff;
+            letter-spacing: 0.5px;
+        }
+
+        .personagem-modal-fechar {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .personagem-modal-fechar:hover {
+            color: #ff6b6b;
+        }
+
+        .personagem-modal .personagem-grid {
+            padding: 18px;
+            overflow-y: auto;
+        }
+
+        body.light-theme .personagem-modal {
+            background: #fff;
+            border-color: #d5d8e0;
+        }
+
+        body.light-theme .personagem-modal-header {
+            border-color: #d5d8e0;
+        }
+
         .personagem-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
@@ -293,7 +383,7 @@
                     <div class="avatar-preview-box">
                         <div id="avatarPreview"></div>
                     </div>
-                    <div class="personagem-grid" id="personagemGrid"></div>
+                    <button type="button" class="btn-escolher-personagem" id="btnAbrirGaleria">🎭 Escolher Personagem</button>
                 </div>
             </div>
 
@@ -321,6 +411,16 @@
             </div>
         </div>
     </main>
+
+    <div class="personagem-modal-overlay" id="personagemModalOverlay">
+        <div class="personagem-modal">
+            <div class="personagem-modal-header">
+                <span>🎭 ESCOLHER PERSONAGEM</span>
+                <button type="button" class="personagem-modal-fechar" id="btnFecharGaleria">✕</button>
+            </div>
+            <div class="personagem-grid" id="personagemGrid"></div>
+        </div>
+    </div>
 
     <script src="js/avatar-pixel.js"></script>
     <script src="js/user-header.js"></script>
@@ -359,12 +459,35 @@
                     renderizarPreview();
                     renderizarGridPersonagens();
                     if (typeof atualizarAvatarCabecalho === 'function') atualizarAvatarCabecalho();
+                    fecharGaleria();
                 });
             });
         }
 
         renderizarPreview();
         renderizarGridPersonagens();
+
+        // ========================================
+        // MODAL DA GALERIA DE PERSONAGENS
+        // ========================================
+        const modalOverlay = document.getElementById('personagemModalOverlay');
+
+        function abrirGaleria() {
+            modalOverlay.classList.add('aberto');
+        }
+
+        function fecharGaleria() {
+            modalOverlay.classList.remove('aberto');
+        }
+
+        document.getElementById('btnAbrirGaleria').addEventListener('click', abrirGaleria);
+        document.getElementById('btnFecharGaleria').addEventListener('click', fecharGaleria);
+        modalOverlay.addEventListener('click', (evento) => {
+            if (evento.target === modalOverlay) fecharGaleria();
+        });
+        document.addEventListener('keydown', (evento) => {
+            if (evento.key === 'Escape') fecharGaleria();
+        });
 
         // ========================================
         // FRASE / STATUS
