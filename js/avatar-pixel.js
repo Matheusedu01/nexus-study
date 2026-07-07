@@ -367,6 +367,199 @@ const PERSONAGENS = [
             ];
         },
     },
+    {
+        id: 'fantasma',
+        nome: 'Fantasma',
+        fundo: '#1b1035',
+        camadas() {
+            const branco = '#f5f5f5';
+            return [
+                camadaFundo(this.fundo),
+                `<rect x="1" y="13" width="22" height="10" fill="${branco}"/>`,
+                `<rect x="3" y="22.3" width="2" height="1.7" fill="${this.fundo}"/><rect x="8" y="22.8" width="2" height="1.2" fill="${this.fundo}"/><rect x="13" y="22.3" width="2" height="1.7" fill="${this.fundo}"/><rect x="18" y="22.8" width="2" height="1.2" fill="${this.fundo}"/>`,
+                `<rect x="6" y="3" width="12" height="10.5" fill="${branco}"/>`,
+                `<rect x="8.2" y="9.3" width="1.9" height="2.6" fill="${INK}"/><rect x="13.9" y="9.3" width="1.9" height="2.6" fill="${INK}"/>`,
+                `<rect x="10.6" y="12.6" width="2.8" height="1.8" fill="${INK}"/>`,
+            ];
+        },
+    },
+    {
+        id: 'esqueleto',
+        nome: 'Esqueleto',
+        fundo: '#0a0a0a',
+        camadas() {
+            const osso = '#ece9e1';
+            return [
+                camadaFundo(this.fundo),
+                `<rect x="1" y="19" width="22" height="5" fill="${INK}"/><rect x="8" y="20" width="8" height="0.5" fill="${osso}"/><rect x="8" y="21.2" width="8" height="0.5" fill="${osso}"/>`,
+                camadaPescoco(osso),
+                camadaCabeca(osso),
+                `<rect x="7.6" y="9.3" width="3" height="3" fill="${INK}"/><rect x="13.4" y="9.3" width="3" height="3" fill="${INK}"/>`,
+                `<rect x="10.8" y="12.6" width="2.4" height="1.6" fill="${INK}"/>`,
+                `<rect x="8" y="14.8" width="8" height="1.6" fill="${INK}"/><rect x="8.3" y="14.8" width="0.5" height="1.6" fill="${osso}"/><rect x="9.5" y="14.8" width="0.5" height="1.6" fill="${osso}"/><rect x="10.7" y="14.8" width="0.5" height="1.6" fill="${osso}"/><rect x="11.9" y="14.8" width="0.5" height="1.6" fill="${osso}"/><rect x="13.1" y="14.8" width="0.5" height="1.6" fill="${osso}"/><rect x="14.3" y="14.8" width="0.5" height="1.6" fill="${osso}"/><rect x="15.2" y="14.8" width="0.5" height="1.6" fill="${osso}"/>`,
+            ];
+        },
+    },
+    {
+        id: 'chef',
+        nome: 'Chef',
+        fundo: '#e76f51',
+        camadas() {
+            const pele = '#f1c27d';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#f8f9fa'),
+                `<rect x="9.3" y="19" width="1" height="2.4" fill="#e9ecef"/><rect x="10.9" y="19" width="1" height="2.4" fill="#e9ecef"/><rect x="12.5" y="19" width="1" height="2.4" fill="#e9ecef"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#4a2c14'),
+                `<rect x="9.5" y="14.3" width="5" height="1" fill="#4a2c14"/>`,
+                camadaBoca(),
+                `<rect x="6.5" y="1.6" width="11" height="1.6" fill="#fff"/><rect x="7" y="-2.6" width="10" height="4.4" fill="#fff"/>`,
+            ];
+        },
+    },
+    {
+        id: 'professor',
+        nome: 'Professor(a)',
+        fundo: '#606c38',
+        camadas() {
+            const pele = '#e0ac69';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#6c584c'),
+                `<rect x="10.8" y="19" width="2.4" height="4" fill="#6a040f"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#4a2c14'),
+                camadaBoca(),
+                `<rect x="7.3" y="9.7" width="3.4" height="2.6" fill="none" stroke="${INK}" stroke-width="0.6"/><rect x="13.3" y="9.7" width="3.4" height="2.6" fill="none" stroke="${INK}" stroke-width="0.6"/><rect x="10.7" y="10.6" width="2.6" height="0.4" fill="${INK}"/>`,
+                `<rect x="6" y="2" width="12" height="3" fill="#4a2c14"/><rect x="10.5" y="2" width="1" height="3" fill="${pele}"/>`,
+            ];
+        },
+    },
+    {
+        id: 'mago',
+        nome: 'Mago',
+        fundo: '#3a0ca3',
+        camadas() {
+            const pele = '#e0ac69';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#1d3557'),
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#4a2c14'),
+                `<rect x="9.5" y="15.3" width="5" height="1" fill="#e9ecef"/><rect x="7" y="13.9" width="10" height="0.9" fill="#e9ecef"/><rect x="7.5" y="14.9" width="9" height="4.5" fill="#e9ecef"/>`,
+                `<rect x="6" y="2" width="12" height="1.6" fill="#e9ecef"/>`,
+                `<rect x="5" y="1.3" width="14" height="1.3" fill="#7209b7"/><rect x="9" y="-2" width="6" height="1.6" fill="#1d3557"/><rect x="9.7" y="-3.4" width="4.6" height="1.5" fill="#1d3557"/><rect x="10.4" y="-4.6" width="3.2" height="1.3" fill="#1d3557"/><rect x="11.1" y="-5.6" width="1.8" height="1.1" fill="#1d3557"/>`,
+                `<rect x="7" y="0.5" width="0.8" height="0.8" fill="#ffd700"/><rect x="15.5" y="1.5" width="0.8" height="0.8" fill="#ffd700"/><rect x="11.5" y="-3" width="0.8" height="0.8" fill="#ffd700"/>`,
+            ];
+        },
+    },
+    {
+        id: 'super-heroi',
+        nome: 'Super-herói',
+        fundo: '#0466c8',
+        camadas() {
+            const pele = '#f1c27d';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#d00000'),
+                `<rect x="10.5" y="20" width="3" height="2.6" fill="#ffd700"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                `<rect x="6" y="2" width="12" height="3.5" fill="#1c1c1c"/>`,
+                camadaBoca(),
+                `<rect x="7" y="8.7" width="4.4" height="3.2" fill="#d00000"/><rect x="12.6" y="8.7" width="4.4" height="3.2" fill="#d00000"/><rect x="11.4" y="9.8" width="1.2" height="0.5" fill="#d00000"/>`,
+                `<rect x="8" y="10" width="0.9" height="0.9" fill="#fff"/><rect x="14.5" y="10" width="0.9" height="0.9" fill="#fff"/>`,
+            ];
+        },
+    },
+    {
+        id: 'vilao',
+        nome: 'Vilão(ã)',
+        fundo: '#001219',
+        camadas() {
+            const pele = '#e0ac69';
+            return [
+                camadaFundo(this.fundo),
+                `<rect x="8.5" y="15" width="2" height="4" fill="#3c096c"/><rect x="13.5" y="15" width="2" height="4" fill="#3c096c"/>`,
+                camadaOmbros('#240046'),
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                `<rect x="12.8" y="11.5" width="0.5" height="2.4" fill="#8a5a2b" opacity="0.7"/>`,
+                camadaOlhos('#1c1c1c'),
+                camadaBoca('#5a1a1a'),
+                `<rect x="6" y="2" width="12" height="3.5" fill="#1c1c1c"/><rect x="4.5" y="3" width="1.5" height="8" fill="#1c1c1c"/><rect x="18" y="3" width="1.5" height="8" fill="#1c1c1c"/>`,
+            ];
+        },
+    },
+    {
+        id: 'palhaco',
+        nome: 'Palhaço(a)',
+        fundo: '#f72585',
+        camadas() {
+            const pele = '#fdf0f5';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#ffd60a'),
+                `<rect x="2" y="19.3" width="2" height="2" fill="#06d6a0"/><rect x="5.5" y="19.3" width="2" height="2" fill="#f72585"/><rect x="9" y="19.3" width="2" height="2" fill="#06d6a0"/><rect x="13" y="19.3" width="2" height="2" fill="#f72585"/><rect x="16.5" y="19.3" width="2" height="2" fill="#06d6a0"/><rect x="20" y="19.3" width="2" height="2" fill="#f72585"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                `<rect x="8" y="8.5" width="3" height="0.8" fill="#1c1c1c"/><rect x="13" y="8.5" width="3" height="0.8" fill="#1c1c1c"/>`,
+                `<rect x="8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="13.8" y="10" width="2.2" height="2.2" fill="${INK}"/><rect x="8.3" y="10.3" width="0.7" height="0.7" fill="#fff"/><rect x="14.1" y="10.3" width="0.7" height="0.7" fill="#fff"/>`,
+                `<rect x="8.5" y="15" width="7" height="1.6" fill="#d00000"/>`,
+                `<rect x="10.9" y="12.2" width="2.2" height="2.2" fill="#d00000"/>`,
+                `<rect x="6" y="1" width="3" height="2.6" fill="#06d6a0"/><rect x="9.3" y="0.4" width="3" height="3.2" fill="#ffd60a"/><rect x="13" y="0.6" width="3" height="2.9" fill="#00b4d8"/><rect x="16" y="1.2" width="2.3" height="2.3" fill="#06d6a0"/>`,
+            ];
+        },
+    },
+    {
+        id: 'detetive',
+        nome: 'Detetive',
+        fundo: '#495057',
+        camadas() {
+            const pele = '#f1c27d';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#c9a66b'),
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#4a2c14'),
+                `<rect x="9.5" y="14.3" width="5" height="1" fill="#4a2c14"/>`,
+                camadaBoca(),
+                `<rect x="5" y="1.6" width="14" height="2.6" fill="#4a2c14"/><rect x="4.5" y="4.2" width="6" height="1" fill="#4a2c14"/><rect x="6" y="1" width="12" height="0.9" fill="#8a5a2b"/>`,
+            ];
+        },
+    },
+    {
+        id: 'cowboy',
+        nome: 'Cowboy(girl)',
+        fundo: '#bc6c25',
+        camadas() {
+            const pele = '#c68642';
+            return [
+                camadaFundo(this.fundo),
+                camadaOmbros('#5a3825'),
+                `<rect x="9" y="15.8" width="6" height="1.8" fill="#9d0208"/>`,
+                camadaPescoco(pele),
+                camadaOrelhas(pele),
+                camadaCabeca(pele),
+                camadaOlhos('#4a2c14'),
+                `<rect x="9.5" y="14.3" width="5" height="1" fill="#4a2c14"/>`,
+                camadaBoca(),
+                `<rect x="4" y="1.8" width="16" height="1.3" fill="#a97142"/><rect x="6" y="-1" width="12" height="3" fill="#a97142"/><rect x="7" y="-1.6" width="10" height="1" fill="#8a5a2b"/>`,
+            ];
+        },
+    },
 ];
 
 function obterPersonagemUsuario(email) {
