@@ -11,7 +11,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { initializeFirestore } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCefpssn8R6zTr_nbfPe0GTl9nVqnaPa3s",
@@ -25,4 +25,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+// Usa long-polling em vez do streaming padrão (WebChannel) -- em redes mais
+// restritas (proxy, algumas redes escolares/corporativas, VPN), o streaming
+// falha silenciosamente com "client is offline". Long-polling é um pouco
+// mais lento mas funciona em muito mais lugares.
+export const db = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });

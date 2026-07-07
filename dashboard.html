@@ -350,7 +350,31 @@
 
     <script src="js/avatar-pixel.js"></script>
     <script src="js/user-header.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script type="module">
+        // Sincroniza as trilhas com o Firestore (fonte compartilhada entre
+        // usuários) ANTES de carregar dashboard.js, que ainda lê tudo de
+        // localStorage.trilhasData de forma síncrona.
+        import { buscarTrilhasFirestore, salvarTrilhasFirestore } from './js/trilhas-firestore.js';
+        try {
+            const dados = await buscarTrilhasFirestore();
+            if (dados !== null) {
+                localStorage.setItem('trilhasData', JSON.stringify(dados));
+            } else {
+                // Firestore ainda vazio (primeiríssimo uso do app): usa o seed
+                // local e já sobe pro Firestore, pra virar a fonte compartilhada.
+                await garantirTrilhasSeed();
+                const seedLocal = JSON.parse(localStorage.getItem('trilhasData') || '[]');
+                if (seedLocal.length > 0) {
+                    salvarTrilhasFirestore(seedLocal).catch(erro => console.warn('Não foi possível subir o seed inicial pro Firestore:', erro));
+                }
+            }
+        } catch (erro) {
+            console.warn('Não foi possível sincronizar trilhas com o Firestore, usando dados locais:', erro);
+        }
+        const script = document.createElement('script');
+        script.src = 'js/dashboard.js';
+        document.body.appendChild(script);
+    </script>
     <script src="js/calculadora.js"></script>
     <script src="js/caderno.js"></script>
     <script src="js/pomodoro.js"></script>

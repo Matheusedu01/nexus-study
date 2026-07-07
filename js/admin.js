@@ -15,20 +15,59 @@ document.getElementById('adminName').textContent = '👑 Admin';
 
 let trilhas = JSON.parse(localStorage.getItem('trilhasData')) || [];
 
-// Primeira vez que o app é aberto: popula com o conteúdo de exemplo de dados/trilhas.json
-garantirTrilhasSeed().then(() => {
+// Espera js/trilhas-firestore.js (um módulo) terminar de carregar, já que
+// admin.js é um script clássico e não pode dar "import" nele diretamente.
+function aguardarFirestorePronto() {
+    if (typeof window.buscarTrilhasFirestore === 'function') return Promise.resolve();
+    return new Promise(resolve => window.addEventListener('trilhasFirestorePronto', resolve, { once: true }));
+}
+
+// Busca a versão mais recente no Firestore (compartilhada entre todo mundo)
+// antes de renderizar o admin. Se o Firestore ainda não tiver nada (primeira
+// vez que o app roda), usa o seed local de dados/trilhas.json e já sobe ele
+// pro Firestore, pra virar a fonte compartilhada dali pra frente.
+async function iniciarAdmin() {
+    try {
+        await aguardarFirestorePronto();
+        const dadosFirestore = await window.buscarTrilhasFirestore();
+        if (dadosFirestore !== null) {
+            localStorage.setItem('trilhasData', JSON.stringify(dadosFirestore));
+        } else {
+            await garantirTrilhasSeed();
+            const seedLocal = JSON.parse(localStorage.getItem('trilhasData') || '[]');
+            if (seedLocal.length > 0) {
+                await window.salvarTrilhasFirestore(seedLocal).catch(erro => {
+                    console.warn('Não foi possível subir o seed inicial pro Firestore:', erro);
+                });
+            }
+        }
+    } catch (erro) {
+        console.warn('Não foi possível sincronizar trilhas com o Firestore, usando dados locais:', erro);
+        await garantirTrilhasSeed();
+    }
+
     trilhas = JSON.parse(localStorage.getItem('trilhasData')) || [];
     carregarTrilhasAdmin();
-});
+}
+iniciarAdmin();
 
 // ========================================
 // FUNÇÃO: Salvar Dados
 // ========================================
-function salvarDados() {
+async function salvarDados() {
     localStorage.setItem('trilhasData', JSON.stringify(trilhas));
     localStorage.setItem('trilhasPublicas', JSON.stringify(trilhas));
     localStorage.setItem('trilhasAdmin', JSON.stringify(trilhas));
     console.log('✅ Dados salvos no localStorage!');
+
+    try {
+        await aguardarFirestorePronto();
+        await window.salvarTrilhasFirestore(trilhas);
+        console.log('✅ Dados sincronizados com o Firestore!');
+    } catch (erro) {
+        console.error('Falha ao salvar no Firestore:', erro);
+        alert('⚠️ Salvo neste navegador, mas houve um problema ao sincronizar com o banco de dados online. Suas mudanças podem não aparecer pra outros usuários.\n\nErro: ' + erro.message);
+    }
 }
 
 // ========================================

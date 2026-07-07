@@ -137,7 +137,18 @@
     <script src="js/utils.js"></script>
     <script src="js/conquistas.js"></script>
     <script src="js/conteudo-render.js"></script>
-    <script src="js/estudo.js"></script>
+    <script type="module">
+        import { buscarTrilhasFirestore } from './js/trilhas-firestore.js';
+        try {
+            const dados = await buscarTrilhasFirestore();
+            if (dados !== null) localStorage.setItem('trilhasData', JSON.stringify(dados));
+        } catch (erro) {
+            console.warn('Não foi possível sincronizar trilhas com o Firestore, usando dados locais:', erro);
+        }
+        const script = document.createElement('script');
+        script.src = 'js/estudo.js';
+        document.body.appendChild(script);
+    </script>
     <script src="js/calculadora.js"></script>
     <script src="js/caderno.js"></script>
     <script src="js/pomodoro.js"></script>
