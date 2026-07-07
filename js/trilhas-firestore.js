@@ -15,9 +15,8 @@
 // módulo, tipo os bootstraps das páginas) quanto via window.* (pra
 // js/admin.js, que é um script clássico e não pode dar "import").
 
-import { db, auth } from './firebase-init.js';
+import { db } from './firebase-init.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 const REF = doc(db, 'dados', 'trilhas');
 
@@ -26,24 +25,14 @@ export async function buscarTrilhasFirestore() {
     return snap.exists() ? (snap.data().lista || []) : null;
 }
 
+// Quem chama isso (admin.js, ou o bootstrap de dashboard.html na primeira
+// vez que o app roda) já passou por um login real no Firebase antes de
+// chegar aqui, então a escrita já sai autenticada -- sem precisar de
+// nenhum login anônimo extra.
 export async function salvarTrilhasFirestore(trilhas) {
-    // O admin precisa estar autenticado (mesmo que anonimamente) pra escrita
-    // ser aceita pelas regras de segurança do Firestore -- ver garantirLoginAnonimo().
-    await garantirLoginAnonimo();
     await setDoc(REF, { lista: trilhas, atualizadoEm: new Date().toISOString() });
-}
-
-// O modo admin usa um login próprio (usuário/senha fixos, sem Firebase) --
-// pra ainda assim conseguir escrever no Firestore com alguma proteção
-// (bloqueando visitantes anônimos "de fora"), ele entra de forma anônima
-// no Firebase só pra ter uma sessão válida na hora de salvar.
-export async function garantirLoginAnonimo() {
-    if (!auth.currentUser) {
-        await signInAnonymously(auth);
-    }
 }
 
 window.buscarTrilhasFirestore = buscarTrilhasFirestore;
 window.salvarTrilhasFirestore = salvarTrilhasFirestore;
-window.garantirLoginAnonimoFirestore = garantirLoginAnonimo;
 window.dispatchEvent(new Event('trilhasFirestorePronto'));
