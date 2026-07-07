@@ -704,6 +704,13 @@ function ativarCliquePalavras() {
     const content = document.getElementById('studyContent');
     if (!content) return;
 
+    // Esse recurso (clicar numa palavra pra traduzir) só faz sentido em
+    // trilhas de idioma -- numa trilha 100% em português (ETEC, etc.),
+    // "traduzir" uma palavra em português pra português não ajuda em nada,
+    // e só deixa o texto com espaçamento estranho por causa dos <span>s.
+    const ehTrilhaDeIdioma = trilha?.tags?.some(t => ['inglês', 'idiomas'].includes((t || '').toLowerCase()));
+    if (!ehTrilhaDeIdioma) return;
+
     // Pega todas as palavras do texto
     const texto = content.innerText || content.textContent;
     const palavras = texto.split(/\s+/).filter(p => p.length > 1);
@@ -713,7 +720,7 @@ function ativarCliquePalavras() {
     const palavrasIgnoradas = ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she', 'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what', 'so', 'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me', 'when', 'make', 'can', 'like', 'time', 'no', 'just', 'him', 'know'];
 
     // Cria um mapa de palavras para destacar
-    const palavrasParaDestacar = [...new Set(palavrasUnicas.map(p => p.replace(/[^a-zA-Z]/g, '')).filter(limpa => {
+    const palavrasParaDestacar = [...new Set(palavrasUnicas.map(p => p.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ]/g, '')).filter(limpa => {
         return limpa.length > 2 && !palavrasIgnoradas.includes(limpa.toLowerCase());
     }))].slice(0, 30); // Limita para não ficar pesado
 
