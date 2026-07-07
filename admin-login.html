@@ -61,8 +61,8 @@
 
             <form id="adminLoginForm">
                 <div class="input-group">
-                    <label>👑 Usuário Admin</label>
-                    <input type="text" id="adminUser" placeholder="admin" required>
+                    <label>👑 E-mail do Admin</label>
+                    <input type="email" id="adminUser" placeholder="seu@email.com" required>
                 </div>
                 
                 <div class="input-group">
@@ -81,27 +81,8 @@
         </div>
     </div>
 
+    <script type="module" src="js/admin-auth.js"></script>
     <script>
-        // Credenciais do Admin (você pode mudar)
-        const ADMIN_CREDENTIALS = {
-            user: 'admin',
-            password: 'admin123'
-        };
-
-        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const user = document.getElementById('adminUser').value;
-            const password = document.getElementById('adminPassword').value;
-            
-            if (user === ADMIN_CREDENTIALS.user && password === ADMIN_CREDENTIALS.password) {
-                localStorage.setItem('isAdmin', 'true');
-                window.location.href = 'admin.html';
-            } else {
-                alert('❌ Usuário ou senha incorretos!');
-            }
-        });
-
         // Partículas
         function createParticles() {
             const container = document.getElementById('particles');
