@@ -179,6 +179,9 @@ function confirmarReset() {
     if (resetIndex !== null) {
         const progressKey = `progress_${resetIndex}_${user.email}`;
         localStorage.removeItem(progressKey);
+        if (typeof window.salvarUsuarioFirestore === 'function') {
+            window.salvarUsuarioFirestore(user.email).catch(erro => console.warn('Não foi possível sincronizar reset com o Firestore:', erro));
+        }
         carregarTrilhas();
         fecharModalReset();
         alert('🔄 Progresso resetado com sucesso!');

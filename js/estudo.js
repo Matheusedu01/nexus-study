@@ -505,6 +505,9 @@ function marcarProgresso() {
     updateProgress();
     registrarHistorico(user.email);
     verificarConquistas();
+    if (typeof window.salvarUsuarioFirestore === 'function') {
+        window.salvarUsuarioFirestore(user.email).catch(erro => console.warn('Não foi possível sincronizar progresso com o Firestore:', erro));
+    }
 
     const total = contarTotalEstudos();
     const concluidos = progress.concluidos.length;

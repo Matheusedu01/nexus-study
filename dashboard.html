@@ -355,6 +355,7 @@
         // usuários) ANTES de carregar dashboard.js, que ainda lê tudo de
         // localStorage.trilhasData de forma síncrona.
         import { buscarTrilhasFirestore, salvarTrilhasFirestore } from './js/trilhas-firestore.js';
+        import { sincronizarUsuarioLocal } from './js/usuario-firestore.js';
         try {
             const dados = await buscarTrilhasFirestore();
             if (dados !== null) {
@@ -371,6 +372,16 @@
         } catch (erro) {
             console.warn('Não foi possível sincronizar trilhas com o Firestore, usando dados locais:', erro);
         }
+
+        const usuarioAtual = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (usuarioAtual?.email) {
+            try {
+                await sincronizarUsuarioLocal(usuarioAtual.email);
+            } catch (erro) {
+                console.warn('Não foi possível sincronizar progresso com o Firestore, usando dados locais:', erro);
+            }
+        }
+
         const script = document.createElement('script');
         script.src = 'js/dashboard.js';
         document.body.appendChild(script);
